@@ -4,7 +4,7 @@ Bitfocus Companion module for **d&b audiotechnik Soundscape Engines** (DS110, DS
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
-Module id: `soundscape-processors` · Current version: **2.0.0-beta.8**
+Module id: `soundscape-processors` · Current version: **2.0.0-beta.9**
 
 See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedback overview. Internal research notes: [`COMPANION-DNB-MODULE-RESEARCH.md`](COMPANION-DNB-MODULE-RESEARCH.md).
 
@@ -22,7 +22,7 @@ yarn install
 npx companion-module-build --dev --prerelease
 ```
 
-Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.8` on the connection.
+Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.9` on the connection.
 
 ### Test page helper
 
@@ -30,6 +30,7 @@ Install the built package into Companion’s modules folder (or use a local modu
 
 ## Version history
 
+- **2.0.0-beta.9** — Test release
 - **2.0.0-beta.8** — Dual polling intervals (continuous / discrete)
 - **2.0.0-beta.7** — Subscription-based polling; more display feedbacks
 - **2.0.0-beta.6** — SOR/matrix variable display fixes
