@@ -1,0 +1,28 @@
+{
+	"name": "soundscape-processors",
+	"version": "2.0.0-beta.8",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format": "prettier -w .",
+		"lint:raw": "eslint --ext .ts --ext .js --ignore-pattern dist --ignore-pattern pkg",
+		"lint": "yarn lint:raw .",
+		"build": "companion-module-build --dev --prerelease"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sergeXYZ/companion-module-soundscape-processors.git"
+	},
+	"bugs": {
+		"url": "https://github.com/sergeXYZ/companion-module-soundscape-processors/issues"
+	},
+	"dependencies": {
+		"@companion-module/base": "~1.10.0",
+		"osc": "^2.4.5"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^2.6.1",
+		"prettier": "^3.3.2"
+	}
+}
