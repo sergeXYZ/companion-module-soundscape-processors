@@ -2251,13 +2251,13 @@ export default {
 				let soundObject = options.soundobject.toString()
 				let sourceSpread = options.sourcespread
 
-				let currentSourceSpread = self.DATA?.soundObject[soundObject].sourceSpread
+				let currentSourceSpread = self.DATA?.positioning?.[soundObject]?.sourceSpread
 
-				if (currentSourceSpread !== undefined) {
+				if (currentSourceSpread !== undefined && currentSourceSpread !== null) {
 					let newSourceSpread = currentSourceSpread + sourceSpread
 
-					if (sourceSpread > 1.0) {
-						sourceSpread = 1.0
+					if (newSourceSpread > 1.0) {
+						newSourceSpread = 1.0
 					}
 
 					let args = [
@@ -2300,13 +2300,13 @@ export default {
 				let soundObject = options.soundobject.toString()
 				let sourceSpread = options.sourcespread
 
-				let currentSourceSpread = self.DATA?.soundObject[soundObject].sourceSpread
+				let currentSourceSpread = self.DATA?.positioning?.[soundObject]?.sourceSpread
 
-				if (currentSourceSpread !== undefined) {
+				if (currentSourceSpread !== undefined && currentSourceSpread !== null) {
 					let newSourceSpread = currentSourceSpread - sourceSpread
 
-					if (sourceSpread < 0.0) {
-						sourceSpread = 0.0
+					if (newSourceSpread < 0.0) {
+						newSourceSpread = 0.0
 					}
 
 					let args = [
@@ -2530,7 +2530,7 @@ export default {
 				let soundObject = options.soundobject.toString()
 				let sourcePositionX = options.sourceposition
 
-				let currentSourcePositionX = self.DATA?.positioning[id].sourcePositionX
+				let currentSourcePositionX = self.DATA?.positioning[soundObject].sourcePositionX
 
 				if (currentSourcePositionX !== undefined) {
 					let newSourcePositionX = currentSourcePositionX + sourcePositionX
@@ -2574,7 +2574,7 @@ export default {
 				let soundObject = options.soundobject.toString()
 				let sourcePositionX = options.sourceposition
 
-				let currentSourcePositionX = self.DATA?.positioning[id].sourcePositionX
+				let currentSourcePositionX = self.DATA?.positioning[soundObject].sourcePositionX
 
 				if (currentSourcePositionX !== undefined) {
 					let newSourcePositionX = currentSourcePositionX - sourcePositionX
@@ -2654,7 +2654,7 @@ export default {
 				let soundObject = options.soundobject.toString()
 				let sourcePositionY = options.sourceposition
 
-				let currentSourcePositionY = self.DATA?.positioning[id].sourcePositionY
+				let currentSourcePositionY = self.DATA?.positioning[soundObject].sourcePositionY
 
 				if (currentSourcePositionY !== undefined) {
 					let newSourcePositionY = currentSourcePositionY + sourcePositionY
@@ -2698,7 +2698,7 @@ export default {
 				let soundObject = options.soundobject.toString()
 				let sourcePositionY = options.sourceposition
 
-				let currentSourcePositionY = self.DATA?.positioning[id].sourcePositionY
+				let currentSourcePositionY = self.DATA?.positioning[soundObject].sourcePositionY
 
 				if (currentSourcePositionY !== undefined) {
 					let newSourcePositionY = currentSourcePositionY - sourcePositionY

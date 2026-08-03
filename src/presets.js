@@ -904,6 +904,207 @@ export default {
 			],
 		})
 
+		function addRotaryExample({
+			id,
+			name,
+			text,
+			localVariables,
+			increaseActionId,
+			decreaseActionId,
+			increaseOptions,
+			decreaseOptions,
+			feedbackId,
+			feedbackOptions,
+		}) {
+			const feedbacks = []
+			if (feedbackId && feedbackOptions) {
+				feedbacks.push({
+					feedbackId,
+					options: feedbackOptions,
+				})
+			}
+
+			presets[id] = {
+				type: 'simple',
+				name,
+				keywords: ['rotary', 'encoder', 'streamdeck', 'example'],
+				style: { ...buttonBaseStyle, text },
+				localVariables,
+				steps: [
+					{
+						down: [],
+						up: [],
+						rotate_left: [{ actionId: decreaseActionId, options: decreaseOptions }],
+						rotate_right: [{ actionId: increaseActionId, options: increaseOptions }],
+					},
+				],
+				feedbacks,
+			}
+		}
+
+		addRotaryExample({
+			id: 'rotary_matrix_input_gain',
+			name: 'Rotary Matrix Input Gain — EXAMPLE: change "matrixinput" (and step "gain")',
+			text: 'In $(local:matrixinput)\nGain',
+			localVariables: [{ variableType: 'simple', variableName: 'matrixinput', startupValue: 1 }],
+			increaseActionId: 'increaseMatrixInputGain',
+			decreaseActionId: 'decreaseMatrixInputGain',
+			increaseOptions: { matrixinput: expr('$(local:matrixinput)'), gain: 0.5 },
+			decreaseOptions: { matrixinput: expr('$(local:matrixinput)'), gain: 0.5 },
+			feedbackId: 'matrixInputGain',
+			feedbackOptions: { matrixinput: expr('$(local:matrixinput)') },
+		})
+
+		addRotaryExample({
+			id: 'rotary_matrix_output_gain',
+			name: 'Rotary Matrix Output Gain — EXAMPLE: change "matrixoutput" (and step "gain")',
+			text: 'Out $(local:matrixoutput)\nGain',
+			localVariables: [{ variableType: 'simple', variableName: 'matrixoutput', startupValue: 1 }],
+			increaseActionId: 'increaseMatrixOutputGain',
+			decreaseActionId: 'decreaseMatrixOutputGain',
+			increaseOptions: { matrixoutput: expr('$(local:matrixoutput)'), gain: 0.5 },
+			decreaseOptions: { matrixoutput: expr('$(local:matrixoutput)'), gain: 0.5 },
+			feedbackId: 'matrixOutputGain',
+			feedbackOptions: { matrixoutput: expr('$(local:matrixoutput)') },
+		})
+
+		addRotaryExample({
+			id: 'rotary_matrix_input_delay',
+			name: 'Rotary Matrix Input Delay — EXAMPLE: change "matrixinput" (and step "delay")',
+			text: 'In $(local:matrixinput)\nDelay',
+			localVariables: [{ variableType: 'simple', variableName: 'matrixinput', startupValue: 1 }],
+			increaseActionId: 'increaseMatrixInputDelay',
+			decreaseActionId: 'decreaseMatrixInputDelay',
+			increaseOptions: { matrixinput: expr('$(local:matrixinput)'), delay: 1 },
+			decreaseOptions: { matrixinput: expr('$(local:matrixinput)'), delay: 1 },
+			feedbackId: 'matrixInputDelay',
+			feedbackOptions: { matrixinput: expr('$(local:matrixinput)') },
+		})
+
+		addRotaryExample({
+			id: 'rotary_sor_gain',
+			name: 'Rotary SOR Gain — EXAMPLE: change "functiongroup" + "soundobject" (and step "gain")',
+			text: 'FG$(local:functiongroup) SO$(local:soundobject)\nGain',
+			localVariables: [
+				{ variableType: 'simple', variableName: 'functiongroup', startupValue: 1 },
+				{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 },
+			],
+			increaseActionId: 'increaseSoundObjectRoutingGain',
+			decreaseActionId: 'decreaseSoundObjectRoutingGain',
+			increaseOptions: {
+				functiongroup: expr('$(local:functiongroup)'),
+				soundobject: expr('$(local:soundobject)'),
+				gain: 0.5,
+			},
+			decreaseOptions: {
+				functiongroup: expr('$(local:functiongroup)'),
+				soundobject: expr('$(local:soundobject)'),
+				gain: 0.5,
+			},
+			feedbackId: 'soundObjectRoutingGain',
+			feedbackOptions: {
+				functiongroup: expr('$(local:functiongroup)'),
+				soundobject: expr('$(local:soundobject)'),
+			},
+		})
+
+		addRotaryExample({
+			id: 'rotary_pos_spread',
+			name: 'Rotary Source Spread — EXAMPLE: change "soundobject" (and step "sourcespread")',
+			text: 'SO$(local:soundobject)\nSpread',
+			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
+			increaseActionId: 'increasePositioningSourceSpread',
+			decreaseActionId: 'decreasePositioningSourceSpread',
+			increaseOptions: { soundobject: expr('$(local:soundobject)'), sourcespread: 0.1 },
+			decreaseOptions: { soundobject: expr('$(local:soundobject)'), sourcespread: 0.1 },
+			feedbackId: 'positioningSourceSpread',
+			feedbackOptions: { matrixinput: expr('$(local:soundobject)') },
+		})
+
+		addRotaryExample({
+			id: 'rotary_pos_x',
+			name: 'Rotary Source Position X — EXAMPLE: change "soundobject" (and step "sourceposition")',
+			text: 'SO$(local:soundobject)\nPos X',
+			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
+			increaseActionId: 'increasePositioningSourcePositionX',
+			decreaseActionId: 'decreasePositioningSourcePositionX',
+			increaseOptions: { soundobject: expr('$(local:soundobject)'), sourceposition: 0.1 },
+			decreaseOptions: { soundobject: expr('$(local:soundobject)'), sourceposition: 0.1 },
+			feedbackId: 'positioningSourcePositionX',
+			feedbackOptions: { matrixinput: expr('$(local:soundobject)') },
+		})
+
+		addRotaryExample({
+			id: 'rotary_pos_y',
+			name: 'Rotary Source Position Y — EXAMPLE: change "soundobject" (and step "sourceposition")',
+			text: 'SO$(local:soundobject)\nPos Y',
+			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
+			increaseActionId: 'increasePositioningSourcePositionY',
+			decreaseActionId: 'decreasePositioningSourcePositionY',
+			increaseOptions: { soundobject: expr('$(local:soundobject)'), sourceposition: 0.1 },
+			decreaseOptions: { soundobject: expr('$(local:soundobject)'), sourceposition: 0.1 },
+			feedbackId: 'positioningSourcePositionY',
+			feedbackOptions: { matrixinput: expr('$(local:soundobject)') },
+		})
+
+		pushSection({
+			id: 'streamdeck-rotaries',
+			name: 'Stream Deck Rotaries',
+			description:
+				'Encoder presets for Stream Deck +. Rotate right = increase, left = decrease. After placing: edit Local Variables (and step amount in the rotate actions). Grey base; advanced feedback shows the live value when polled.',
+			definitions: [
+				{
+					id: 'rotary-matrix-input-gain',
+					type: 'simple',
+					name: 'Matrix Input Gain',
+					description: 'Change local variable "matrixinput". Step amount is action option "gain" (default 0.5 dB).',
+					presets: ['rotary_matrix_input_gain'],
+				},
+				{
+					id: 'rotary-matrix-output-gain',
+					type: 'simple',
+					name: 'Matrix Output Gain',
+					description: 'Change local variable "matrixoutput". Step amount is action option "gain" (default 0.5 dB).',
+					presets: ['rotary_matrix_output_gain'],
+				},
+				{
+					id: 'rotary-matrix-input-delay',
+					type: 'simple',
+					name: 'Matrix Input Delay',
+					description: 'Change local variable "matrixinput". Step amount is action option "delay" (default 1 ms).',
+					presets: ['rotary_matrix_input_delay'],
+				},
+				{
+					id: 'rotary-sor-gain',
+					type: 'simple',
+					name: 'SOR Gain',
+					description: 'Change "functiongroup" + "soundobject". Step amount is "gain" (default 0.5 dB).',
+					presets: ['rotary_sor_gain'],
+				},
+				{
+					id: 'rotary-pos-spread',
+					type: 'simple',
+					name: 'Source Spread',
+					description: 'Change "soundobject". Step amount is "sourcespread" (default 0.1).',
+					presets: ['rotary_pos_spread'],
+				},
+				{
+					id: 'rotary-pos-x',
+					type: 'simple',
+					name: 'Source Position X',
+					description: 'Change "soundobject". Step amount is "sourceposition" (default 0.1).',
+					presets: ['rotary_pos_x'],
+				},
+				{
+					id: 'rotary-pos-y',
+					type: 'simple',
+					name: 'Source Position Y',
+					description: 'Change "soundobject". Step amount is "sourceposition" (default 0.1).',
+					presets: ['rotary_pos_y'],
+				},
+			],
+		})
+
 		self.setPresetDefinitions(structure, presets)
 	},
 }
