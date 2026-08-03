@@ -746,44 +746,58 @@ export default {
 		})
 
 		// ========== Positioning ==========
-		addMomentaryExample({
-			id: 'pos_delay_mode_off_example',
-			name: 'Source Delay Mode Off — EXAMPLE: change "soundobject"',
-			text: 'SO$(local:soundobject)\nOff',
+		presets.pos_delay_mode_all = {
+			type: 'simple',
+			name: 'Source Delay Mode All',
+			style: { ...buttonBaseStyle, text: 'SO ALL\nDelayMode' },
+			steps: [
+				{
+					down: [{ actionId: 'setPositioningSourceDelayModeAll', options: { sourcedelaymode: 0 } }],
+					up: [],
+				},
+				{
+					down: [{ actionId: 'setPositioningSourceDelayModeAll', options: { sourcedelaymode: 1 } }],
+					up: [],
+				},
+				{
+					down: [{ actionId: 'setPositioningSourceDelayModeAll', options: { sourcedelaymode: 2 } }],
+					up: [],
+				},
+			],
+			feedbacks: [],
+		}
+
+		presets.pos_delay_mode_cycle_example = {
+			type: 'simple',
+			name: 'Source Delay Mode Cycle — EXAMPLE: change "soundobject" (Off → Tight → Full)',
+			keywords: ['example', 'configure', 'cycle'],
+			style: { ...buttonBaseStyle, text: 'SO$(local:soundobject)\nDelayMode' },
 			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
-			actionId: 'setPositioningSourceDelayMode',
-			options: { soundobject: expr('$(local:soundobject)'), sourcedelaymode: 0 },
-		})
-		addMomentaryExample({
-			id: 'pos_delay_mode_tight_example',
-			name: 'Source Delay Mode Tight — EXAMPLE: change "soundobject"',
-			text: 'SO$(local:soundobject)\nTight',
-			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
-			actionId: 'setPositioningSourceDelayMode',
-			options: { soundobject: expr('$(local:soundobject)'), sourcedelaymode: 1 },
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'cyclePositioningSourceDelayMode',
+							options: { soundobject: expr('$(local:soundobject)') },
+						},
+					],
+					up: [],
+				},
+			],
 			feedbacks: [
 				{
 					feedbackId: 'positioningSourceDelayModeTight',
 					options: { soundobject: expr('$(local:soundobject)') },
 					style: { ...COLORS.tight },
 				},
-			],
-		})
-		addMomentaryExample({
-			id: 'pos_delay_mode_full_example',
-			name: 'Source Delay Mode Full — EXAMPLE: change "soundobject"',
-			text: 'SO$(local:soundobject)\nFull',
-			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
-			actionId: 'setPositioningSourceDelayMode',
-			options: { soundobject: expr('$(local:soundobject)'), sourcedelaymode: 2 },
-			feedbacks: [
 				{
 					feedbackId: 'positioningSourceDelayModeFull',
 					options: { soundobject: expr('$(local:soundobject)') },
 					style: { ...COLORS.full },
 				},
 			],
-		})
+		}
+
 		addMomentaryExample({
 			id: 'pos_spread_example',
 			name: 'Source Spread — EXAMPLE: change "soundobject" + Spread value',
@@ -817,17 +831,15 @@ export default {
 			id: 'positioning',
 			name: 'Positioning',
 			description:
-				'Delay Mode: Off=grey, Tight=orange, Full=olive (from Colours/). ' + howToLocal('"soundobject"'),
+				'Delay Mode: Cycle button steps Off → Tight → Full (grey / orange / olive). All button is a 3-step latch for every Sound Object. ' +
+				howToLocal('"soundobject"'),
 			definitions: [
 				{
 					id: 'pos-delay-mode',
 					type: 'simple',
 					name: 'Source Delay Mode',
-					presets: [
-						'pos_delay_mode_off_example',
-						'pos_delay_mode_tight_example',
-						'pos_delay_mode_full_example',
-					],
+					description: 'All = latch Off/Tight/Full for every SO. Example = cycle one SO (edit local variable soundobject).',
+					presets: ['pos_delay_mode_all', 'pos_delay_mode_cycle_example'],
 				},
 				{
 					id: 'pos-spread',

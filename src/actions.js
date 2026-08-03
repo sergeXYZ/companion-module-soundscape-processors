@@ -2359,6 +2359,81 @@ export default {
 				]
 
 				self.sendCommand('/positioning/source_delaymode/' + soundObject, args)
+				const so = soundObject.toString()
+				if (self.DATA?.positioning?.[so]) {
+					self.DATA.positioning[so].sourceDelayMode = sourceDelayMode
+				}
+				self.checkFeedbacks('positioningSourceDelayModeTight', 'positioningSourceDelayModeFull')
+			},
+		}
+
+		actions.cyclePositioningSourceDelayMode = {
+			name: 'Positioning - Cycle Source Delay Mode',
+			description: 'Cycle Source Delay Mode for a Sound Object: Off → Tight → Full → Off',
+			options: [
+				{
+					type: 'number',
+					label: 'Sound Object',
+					id: 'soundobject',
+					default: 1,
+					min: 1,
+					max: self.matrixInputCount,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				let options = action.options
+				let soundObject = options.soundobject
+				let so = soundObject.toString()
+				let current = Number(self.DATA?.positioning?.[so]?.sourceDelayMode)
+				if (!Number.isFinite(current) || current < 0 || current > 2) {
+					current = 0
+				}
+				let next = (current + 1) % 3
+
+				let args = [
+					{
+						type: 'i',
+						value: next,
+					},
+				]
+
+				self.sendCommand('/positioning/source_delaymode/' + soundObject, args)
+				if (self.DATA?.positioning?.[so]) {
+					self.DATA.positioning[so].sourceDelayMode = next
+				}
+				self.checkFeedbacks('positioningSourceDelayModeTight', 'positioningSourceDelayModeFull')
+			},
+		}
+
+		actions.setPositioningSourceDelayModeAll = {
+			name: 'Positioning - Source Delay Mode All',
+			description: 'Set the Source Delay Mode for all Sound Objects',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Source Delay Mode',
+					id: 'sourcedelaymode',
+					default: 0,
+					choices: [
+						{ id: 0, label: 'Off' },
+						{ id: 1, label: 'Tight' },
+						{ id: 2, label: 'Full' },
+					],
+				},
+			],
+			callback: async function (action) {
+				let options = action.options
+				let sourceDelayMode = options.sourcedelaymode
+
+				let args = [
+					{
+						type: 'i',
+						value: sourceDelayMode,
+					},
+				]
+
+				self.sendCommand('/positioning/source_delaymode/*', args)
 			},
 		}
 
