@@ -9,6 +9,11 @@ module.exports = {
 		const colorRed = combineRgb(255, 0, 0) // Red
 		const colorGreen = combineRgb(0, 255, 0) // Green
 		const colorBlack = combineRgb(0, 0, 0) // Black
+		const advancedTextStyle = (text) => ({
+			text,
+			color: colorGreen,
+			size: 14,
+		})
 
 		feedbacks.matrixInputMute = {
 			type: 'boolean',
@@ -566,6 +571,7 @@ module.exports = {
 
 		feedbacks.soundObjectRoutingGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Sound Object Routing - Gain',
 			description: 'Show the current Sound Object Routing Gain on the button',
 			options: [
@@ -595,19 +601,16 @@ module.exports = {
 				let gain = self.DATA?.soundObjectRouting[group]?.[soundObject]?.gain
 
 				if (gain === null || gain === undefined) {
-					return {
-						text: '— dB',
-					}
+					return advancedTextStyle('— dB')
 				}
 
-				return {
-					text: `${Number(gain).toFixed(2)} dB`,
-				}
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.matrixInputGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Input - Gain',
 			description: 'Show the current Matrix Input Gain on the button',
 			options: [
@@ -624,13 +627,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const gain = self.DATA?.matrixInput?.[input]?.gain
-				if (gain === null || gain === undefined) return { text: '— dB' }
-				return { text: `${Number(gain).toFixed(2)} dB` }
+				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.matrixInputDelay = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Input - Delay',
 			description: 'Show the current Matrix Input Delay on the button',
 			options: [
@@ -647,13 +651,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const delay = self.DATA?.matrixInput?.[input]?.delay
-				if (delay === null || delay === undefined) return { text: '— ms' }
-				return { text: `${Number(delay).toFixed(2)} ms` }
+				if (delay === null || delay === undefined) return advancedTextStyle('— ms')
+				return advancedTextStyle(`${Number(delay).toFixed(2)} ms`)
 			},
 		}
 
 		feedbacks.matrixInputChannelName = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Input - Channel Name',
 			description: 'Show the Matrix Input channel name on the button',
 			options: [
@@ -670,12 +675,13 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const name = self.DATA?.matrixInput?.[input]?.channelName
-				return { text: name || '—' }
+				return advancedTextStyle(name || '—')
 			},
 		}
 
 		feedbacks.matrixInputReverbSendGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Input - Reverb Send Gain',
 			description: 'Show the Matrix Input reverb send gain on the button',
 			options: [
@@ -692,13 +698,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const gain = self.DATA?.matrixInput?.[input]?.reverbSendGain
-				if (gain === null || gain === undefined) return { text: '— dB' }
-				return { text: `${Number(gain).toFixed(2)} dB` }
+				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.matrixOutputGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Output - Gain',
 			description: 'Show the current Matrix Output Gain on the button',
 			options: [
@@ -715,13 +722,14 @@ module.exports = {
 			callback: function (feedback) {
 				const output = feedback.options.matrixoutput
 				const gain = self.DATA?.matrixOutput?.[output]?.gain
-				if (gain === null || gain === undefined) return { text: '— dB' }
-				return { text: `${Number(gain).toFixed(2)} dB` }
+				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.matrixOutputDelay = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Output - Delay',
 			description: 'Show the current Matrix Output Delay on the button',
 			options: [
@@ -738,13 +746,14 @@ module.exports = {
 			callback: function (feedback) {
 				const output = feedback.options.matrixoutput
 				const delay = self.DATA?.matrixOutput?.[output]?.delay
-				if (delay === null || delay === undefined) return { text: '— ms' }
-				return { text: `${Number(delay).toFixed(2)} ms` }
+				if (delay === null || delay === undefined) return advancedTextStyle('— ms')
+				return advancedTextStyle(`${Number(delay).toFixed(2)} ms`)
 			},
 		}
 
 		feedbacks.matrixOutputChannelName = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Output - Channel Name',
 			description: 'Show the Matrix Output channel name on the button',
 			options: [
@@ -761,12 +770,13 @@ module.exports = {
 			callback: function (feedback) {
 				const output = feedback.options.matrixoutput
 				const name = self.DATA?.matrixOutput?.[output]?.channelName
-				return { text: name || '—' }
+				return advancedTextStyle(name || '—')
 			},
 		}
 
 		feedbacks.matrixNodeGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Node - Gain',
 			description: 'Show the current Matrix Node Gain on the button',
 			options: [
@@ -793,13 +803,14 @@ module.exports = {
 				const input = feedback.options.matrixinput
 				const output = feedback.options.matrixoutput
 				const gain = self.DATA?.matrixNode?.[input]?.[output]?.gain
-				if (gain === null || gain === undefined) return { text: '— dB' }
-				return { text: `${Number(gain).toFixed(2)} dB` }
+				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.matrixNodeDelay = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Matrix Node - Delay',
 			description: 'Show the current Matrix Node Delay on the button',
 			options: [
@@ -826,13 +837,14 @@ module.exports = {
 				const input = feedback.options.matrixinput
 				const output = feedback.options.matrixoutput
 				const delay = self.DATA?.matrixNode?.[input]?.[output]?.delay
-				if (delay === null || delay === undefined) return { text: '— ms' }
-				return { text: `${Number(delay).toFixed(2)} ms` }
+				if (delay === null || delay === undefined) return advancedTextStyle('— ms')
+				return advancedTextStyle(`${Number(delay).toFixed(2)} ms`)
 			},
 		}
 
 		feedbacks.reverbInputGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Reverb Input - Gain',
 			description: 'Show the Reverb Input Gain on the button',
 			options: [
@@ -849,13 +861,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const gain = self.DATA?.reverbInput?.[input]?.gain
-				if (gain === null || gain === undefined) return { text: '— dB' }
-				return { text: `${Number(gain).toFixed(2)} dB` }
+				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.reverbInputProcessingGain = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Reverb Input Processing - Gain',
 			description: 'Show the Reverb Input Processing Gain on the button',
 			options: [
@@ -872,13 +885,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const gain = self.DATA?.reverbInputProcessing?.[input]?.gain
-				if (gain === null || gain === undefined) return { text: '— dB' }
-				return { text: `${Number(gain).toFixed(2)} dB` }
+				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.functionGroupSpreadFactor = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Function Group - Spread Factor',
 			description: 'Show the Function Group spread factor on the button',
 			options: [
@@ -895,13 +909,14 @@ module.exports = {
 			callback: function (feedback) {
 				const group = feedback.options.functiongroup
 				const value = self.DATA?.functionGroup?.[group]?.spreadFactor
-				if (value === null || value === undefined) return { text: '—' }
-				return { text: `${Number(value).toFixed(2)}` }
+				if (value === null || value === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(`${Number(value).toFixed(2)}`)
 			},
 		}
 
 		feedbacks.functionGroupDelay = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Function Group - Delay',
 			description: 'Show the Function Group delay on the button',
 			options: [
@@ -918,13 +933,14 @@ module.exports = {
 			callback: function (feedback) {
 				const group = feedback.options.functiongroup
 				const value = self.DATA?.functionGroup?.[group]?.delay
-				if (value === null || value === undefined) return { text: '— ms' }
-				return { text: `${Number(value).toFixed(2)} ms` }
+				if (value === null || value === undefined) return advancedTextStyle('— ms')
+				return advancedTextStyle(`${Number(value).toFixed(2)} ms`)
 			},
 		}
 
 		feedbacks.functionGroupName = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Function Group - Name',
 			description: 'Show the Function Group name on the button',
 			options: [
@@ -941,12 +957,13 @@ module.exports = {
 			callback: function (feedback) {
 				const group = feedback.options.functiongroup
 				const name = self.DATA?.functionGroup?.[group]?.name
-				return { text: name || '—' }
+				return advancedTextStyle(name || '—')
 			},
 		}
 
 		feedbacks.positioningSourceSpread = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Positioning - Source Spread',
 			description: 'Show the positioning source spread on the button',
 			options: [
@@ -963,13 +980,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const value = self.DATA?.positioning?.[input]?.sourceSpread
-				if (value === null || value === undefined) return { text: '—' }
-				return { text: `${Number(value).toFixed(2)}` }
+				if (value === null || value === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(`${Number(value).toFixed(2)}`)
 			},
 		}
 
 		feedbacks.positioningSourcePositionX = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Positioning - Source Position X',
 			description: 'Show the positioning source X on the button',
 			options: [
@@ -986,13 +1004,14 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const value = self.DATA?.positioning?.[input]?.sourcePositionX
-				if (value === null || value === undefined) return { text: '—' }
-				return { text: `X ${Number(value).toFixed(2)}` }
+				if (value === null || value === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(`X ${Number(value).toFixed(2)}`)
 			},
 		}
 
 		feedbacks.positioningSourcePositionY = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Positioning - Source Position Y',
 			description: 'Show the positioning source Y on the button',
 			options: [
@@ -1009,57 +1028,61 @@ module.exports = {
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
 				const value = self.DATA?.positioning?.[input]?.sourcePositionY
-				if (value === null || value === undefined) return { text: '—' }
-				return { text: `Y ${Number(value).toFixed(2)}` }
+				if (value === null || value === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(`Y ${Number(value).toFixed(2)}`)
 			},
 		}
 
 		feedbacks.matrixSettingsReverbRoomId = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'En-Space - Reverb Room Id',
 			description: 'Show the current reverb room id on the button',
 			options: [],
 			callback: function () {
 				const value = self.DATA?.matrixSettings?.reverbRoomId
-				if (value === null || value === undefined) return { text: '—' }
-				return { text: `Room ${value}` }
+				if (value === null || value === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(`Room ${value}`)
 			},
 		}
 
 		feedbacks.matrixSettingsReverbPreDelayFactor = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'En-Space - Reverb Predelay Factor',
 			description: 'Show the reverb predelay factor on the button',
 			options: [],
 			callback: function () {
 				const value = self.DATA?.matrixSettings?.reverbPreDelayFactor
-				if (value === null || value === undefined) return { text: '—' }
-				return { text: `${Number(value).toFixed(2)}` }
+				if (value === null || value === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(`${Number(value).toFixed(2)}`)
 			},
 		}
 
 		feedbacks.matrixSettingsReverbRearLevel = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'En-Space - Reverb Rear Level',
 			description: 'Show the reverb rear level on the button',
 			options: [],
 			callback: function () {
 				const value = self.DATA?.matrixSettings?.reverbRearLevel
-				if (value === null || value === undefined) return { text: '— dB' }
-				return { text: `${Number(value).toFixed(2)} dB` }
+				if (value === null || value === undefined) return advancedTextStyle('— dB')
+				return advancedTextStyle(`${Number(value).toFixed(2)} dB`)
 			},
 		}
 
 		feedbacks.sceneIndex = {
 			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size'],
 			name: 'Scene - Index / Name',
 			description: 'Show the current scene index and name on the button',
 			options: [],
 			callback: function () {
 				const index = self.DATA?.sceneIndex
 				const name = self.DATA?.sceneName
-				if (index === null || index === undefined) return { text: '—' }
-				return { text: name ? `${index}\n${name}` : `${index}` }
+				if (index === null || index === undefined) return advancedTextStyle('—')
+				return advancedTextStyle(name ? `${index}\n${name}` : `${index}`)
 			},
 		}
 
