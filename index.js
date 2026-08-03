@@ -1,18 +1,18 @@
 // d&b audiotechnik Soundscape Processors (fork of companion-module-dbaudiotechnik-dsp)
-const { InstanceBase, InstanceStatus, runEntrypoint } = require('@companion-module/base')
-const upgrades = require('./src/upgrades')
+import { InstanceBase } from '@companion-module/base'
+import UpgradeScripts from './src/upgrades.js'
 
-const config = require('./src/config')
+import config from './src/config.js'
 
-const actions = require('./src/actions')
-const feedbacks = require('./src/feedbacks')
-const variables = require('./src/variables')
-const presets = require('./src/presets')
+import actions from './src/actions.js'
+import feedbacks from './src/feedbacks.js'
+import variables from './src/variables.js'
+import presets from './src/presets.js'
 
-const api = require('./src/api')
+import api from './src/api.js'
 
-const constants = require('./src/constants')
-const subscriptions = require('./src/subscriptions')
+import constants from './src/constants.js'
+import subscriptions from './src/subscriptions.js'
 
 class dbaudiotechnikDspInstance extends InstanceBase {
 	constructor(internal) {
@@ -98,4 +98,5 @@ class dbaudiotechnikDspInstance extends InstanceBase {
 	}
 }
 
-runEntrypoint(dbaudiotechnikDspInstance, upgrades)
+export default dbaudiotechnikDspInstance
+export { UpgradeScripts }

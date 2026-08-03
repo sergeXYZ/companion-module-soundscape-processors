@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	initActions: function () {
 		let self = this
 		let actions = {}
@@ -17,7 +17,7 @@ module.exports = {
 			],
 			callback: async function (action) {
 				let options = action.options
-				let deviceName = await self.parseVariablesInString(options.devicename)
+				let deviceName = options.devicename
 
 				let args = [
 					{
@@ -668,7 +668,7 @@ module.exports = {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput
-				let channelName = await self.parseVariablesInString(options.channelname)
+				let channelName = options.channelname
 
 				let args = [
 					{
@@ -1839,7 +1839,7 @@ module.exports = {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput
-				let channelName = await self.parseVariablesInString(options.channelname)
+				let channelName = options.channelname
 
 				let args = [
 					{
@@ -4362,6 +4362,36 @@ module.exports = {
 
 				self.sendCommand('/soundobjectrouting/mute/' + functionGroup + '/' + soundObject, args)
 				self.updateSoundObjectRoutingMuteLocal(functionGroup, soundObject, mute)
+			},
+		}
+
+		actions.setSoundObjectRoutingMuteAll = {
+			name: 'Sound Object Routing - Mute All',
+			description: 'Mute or Unmute all Sound Object Routing combinations',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Mute',
+					id: 'mute',
+					default: 1,
+					choices: [
+						{ id: 1, label: 'Mute' },
+						{ id: 0, label: 'Unmute' },
+					],
+				},
+			],
+			callback: async function (action) {
+				let options = action.options
+				let mute = options.mute
+
+				let args = [
+					{
+						type: 'i',
+						value: mute,
+					},
+				]
+
+				self.sendCommand('/soundobjectrouting/mute/*/*', args)
 			},
 		}
 

@@ -1,6 +1,6 @@
-const { Regex } = require('@companion-module/base')
+import { Regex } from '@companion-module/base'
 
-module.exports = {
+export default {
 	getConfigFields() {
 		let self = this
 
@@ -103,6 +103,7 @@ module.exports = {
 				label: 'Enable Polling',
 				width: 3,
 				default: false,
+				disableAutoExpression: true,
 			},
 			{
 				type: 'dropdown',
@@ -114,7 +115,8 @@ module.exports = {
 					{ id: 'subscribed', label: 'Only used parameters (recommended)' },
 					{ id: 'full', label: 'Full wildcard poll (legacy)' },
 				],
-				isVisible: (config) => config.polling === true,
+				disableAutoExpression: true,
+				isVisibleExpression: '$(options:polling) == true',
 			},
 			{
 				type: 'number',
@@ -124,7 +126,7 @@ module.exports = {
 				default: 500,
 				min: 100,
 				max: 60000,
-				isVisible: (config) => config.polling === true && config.pollMode !== 'full',
+				isVisibleExpression: '$(options:polling) == true && $(options:pollMode) != "full"',
 			},
 			{
 				type: 'number',
@@ -134,7 +136,7 @@ module.exports = {
 				default: 2000,
 				min: 100,
 				max: 60000,
-				isVisible: (config) => config.polling === true && config.pollMode !== 'full',
+				isVisibleExpression: '$(options:polling) == true && $(options:pollMode) != "full"',
 			},
 			{
 				type: 'number',
@@ -144,7 +146,7 @@ module.exports = {
 				default: 500,
 				min: 100,
 				max: 60000,
-				isVisible: (config) => config.polling === true && config.pollMode === 'full',
+				isVisibleExpression: '$(options:polling) == true && $(options:pollMode) == "full"',
 			},
 			{
 				type: 'static-text',
@@ -155,7 +157,7 @@ module.exports = {
 					'Polling periodically queries the device. <b>Only used parameters</b> polls paths for buttons that have matching actions/feedbacks. ' +
 					'<b>Continuous</b> (gain, meters, positions, delay values) uses a faster interval; <b>Discrete</b> (mute, enable, polarity, names, scene) uses a slower interval. ' +
 					'<b>Full wildcard poll</b> queries everything with * on a single interval (legacy).',
-				isVisible: (config) => config.polling === true,
+				isVisibleExpression: '$(options:polling) == true',
 			},
 			{
 				type: 'static-text',

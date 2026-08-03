@@ -1,6 +1,7 @@
 {
 	"name": "soundscape-processors",
-	"version": "2.0.0-beta.10",
+	"version": "2.0.0-beta.15",
+	"type": "module",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
@@ -17,12 +18,15 @@
 	"bugs": {
 		"url": "https://github.com/sergeXYZ/companion-module-soundscape-processors/issues"
 	},
+	"engines": {
+		"node": "^22.20 || ^26.5"
+	},
 	"dependencies": {
-		"@companion-module/base": "~1.10.0",
+		"@companion-module/base": "~2.1.2",
 		"osc": "^2.4.5"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.6.1",
+		"@companion-module/tools": "^3.0.1",
 		"prettier": "^3.3.2"
 	}
 }

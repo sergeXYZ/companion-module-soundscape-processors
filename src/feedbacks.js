@@ -1,18 +1,12 @@
-const { combineRgb } = require('@companion-module/base')
+import { combineRgb } from '@companion-module/base'
+import { COLORS } from './colours.js'
 
-module.exports = {
+export default {
 	initFeedbacks: function () {
 		let self = this
 		let feedbacks = {}
 
-		const colorWhite = combineRgb(255, 255, 255) // White
-		const colorRed = combineRgb(255, 0, 0) // Red
 		const colorGreen = combineRgb(0, 255, 0) // Green
-		const colorBlack = combineRgb(0, 0, 0) // Black
-		// d&b R1 defaults sampled from screenshots (Mute switch)
-		const r1MuteOnBg = combineRgb(216, 43, 43) // muted / active
-		const r1MuteOffBg = combineRgb(135, 135, 135) // unmuted (button base style reference)
-		const r1MuteText = combineRgb(255, 255, 255)
 		const advancedTextStyle = (text) => ({
 			text,
 			color: colorGreen,
@@ -23,10 +17,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Input - Mute',
 			description: 'Change the button color based on the Matrix Input Mute State',
-			defaultStyle: {
-				color: r1MuteText,
-				bgcolor: r1MuteOnBg,
-			},
+			defaultStyle: { ...COLORS.mute },
 			options: [
 				{
 					type: 'number',
@@ -54,10 +45,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Input - Delay Enable',
 			description: 'Change the button color based on the Matrix Input Delay Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.delay },
 			options: [
 				{
 					type: 'number',
@@ -85,10 +73,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Input - EQ Enable',
 			description: 'Change the button color based on the Matrix Input EQ Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.eq },
 			options: [
 				{
 					type: 'number',
@@ -116,10 +101,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Input - Polarity',
 			description: 'Change the button color based on the Matrix Input Polarity State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.polarity },
 			options: [
 				{
 					type: 'number',
@@ -147,10 +129,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Input - Level Meter Pre Mute Above Threshold',
 			description: 'Lights up when the Matrix Input Pre-Mute level meter reading (dBFS) is at or above the threshold',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.grey },
 			options: [
 				{
 					type: 'number',
@@ -183,10 +162,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Input - Level Meter Post Mute Above Threshold',
 			description: 'Lights up when the Matrix Input Post-Mute level meter reading (dBFS) is at or above the threshold',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.grey },
 			options: [
 				{
 					type: 'number',
@@ -219,30 +195,31 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Node - Enable',
 			description: 'Change the button color based on the Matrix Node Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.grey },
 			options: [
 				{
 					type: 'number',
-					label: 'Matrix Node',
-					id: 'matrixnode',
+					label: 'Matrix Input',
+					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixInputCount,
+					max: self.matrixInputCount,
+					required: true,
+				},
+				{
+					type: 'number',
+					label: 'Matrix Output',
+					id: 'matrixoutput',
+					default: 1,
+					min: 1,
+					max: self.matrixOutputCount,
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let node = options.matrixnode
-
-				if (self.DATA.matrixNode[node].enable === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = feedback.options.matrixinput
+				const output = feedback.options.matrixoutput
+				return self.DATA?.matrixNode?.[input]?.[output]?.enable === 1
 			},
 		}
 
@@ -250,30 +227,31 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Node - Delay Enable',
 			description: 'Change the button color based on the Matrix Node Delay Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.delay },
 			options: [
 				{
 					type: 'number',
-					label: 'Matrix Node',
-					id: 'matrixnode',
+					label: 'Matrix Input',
+					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixOutputCount,
+					max: self.matrixInputCount,
+					required: true,
+				},
+				{
+					type: 'number',
+					label: 'Matrix Output',
+					id: 'matrixoutput',
+					default: 1,
+					min: 1,
+					max: self.matrixOutputCount,
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let node = options.matrixnode
-
-				if (self.DATA.matrixNode[node].delayEnable === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = feedback.options.matrixinput
+				const output = feedback.options.matrixoutput
+				return self.DATA?.matrixNode?.[input]?.[output]?.delayEnable === 1
 			},
 		}
 
@@ -281,10 +259,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Output - Mute',
 			description: 'Change the button color based on the Matrix Output Mute State',
-			defaultStyle: {
-				color: r1MuteText,
-				bgcolor: r1MuteOnBg,
-			},
+			defaultStyle: { ...COLORS.mute },
 			options: [
 				{
 					type: 'number',
@@ -312,10 +287,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Output - Delay Enable',
 			description: 'Change the button color based on the Matrix Output Delay Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.delay },
 			options: [
 				{
 					type: 'number',
@@ -343,10 +315,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Output - EQ Enable',
 			description: 'Change the button color based on the Matrix Output EQ Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.eq },
 			options: [
 				{
 					type: 'number',
@@ -374,10 +343,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Output - Polarity',
 			description: 'Change the button color based on the Matrix Output Polarity State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.polarity },
 			options: [
 				{
 					type: 'number',
@@ -405,10 +371,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Output - Level Meter Pre Mute Above Threshold',
 			description: 'Lights up when the Matrix Output Pre-Mute level meter reading (dBFS) is at or above the threshold',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.grey },
 			options: [
 				{
 					type: 'number',
@@ -441,10 +404,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Matrix Output - Level Meter Post Mute Above Threshold',
 			description: 'Lights up when the Matrix Output Post-Mute level meter reading (dBFS) is at or above the threshold',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.grey },
 			options: [
 				{
 					type: 'number',
@@ -477,10 +437,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Reverb Input Processing - Mute',
 			description: 'Change the button color based on the Reverb Input Processing Mute State',
-			defaultStyle: {
-				color: r1MuteText,
-				bgcolor: r1MuteOnBg,
-			},
+			defaultStyle: { ...COLORS.mute },
 			options: [
 				{
 					type: 'number',
@@ -508,10 +465,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Reverb Input Processing - EQ Enable',
 			description: 'Change the button color based on the Reverb Input Processing EQ Enable State',
-			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
-			},
+			defaultStyle: { ...COLORS.eq },
 			options: [
 				{
 					type: 'number',
@@ -527,7 +481,7 @@ module.exports = {
 				let options = feedback.options
 				let input = options.reverbinputprocessing
 
-				if (self.reverbInputProcessing[input].eqEnable === 1) {
+				if (self.DATA?.reverbInputProcessing?.[input]?.eqEnable === 1) {
 					return true
 				}
 
@@ -539,10 +493,7 @@ module.exports = {
 			type: 'boolean',
 			name: 'Sound Object Routing - Mute',
 			description: 'Change the button color based on the Sound Object Routing Mute State',
-			defaultStyle: {
-				color: r1MuteText,
-				bgcolor: r1MuteOnBg,
-			},
+			defaultStyle: { ...COLORS.mute },
 			options: [
 				{
 					type: 'number',
@@ -962,6 +913,51 @@ module.exports = {
 				const group = feedback.options.functiongroup
 				const name = self.DATA?.functionGroup?.[group]?.name
 				return advancedTextStyle(name || '—')
+			},
+		}
+
+		
+		feedbacks.positioningSourceDelayModeTight = {
+			type: 'boolean',
+			name: 'Positioning - Source Delay Mode Tight',
+			description: 'Active when Source Delay Mode is Tight',
+			defaultStyle: { ...COLORS.tight },
+			options: [
+				{
+					type: 'number',
+					label: 'Sound Object',
+					id: 'soundobject',
+					default: 1,
+					min: 1,
+					max: self.matrixInputCount,
+					required: true,
+				},
+			],
+			callback: function (feedback) {
+				const so = feedback.options.soundobject
+				return Number(self.DATA?.positioning?.[so]?.sourceDelayMode) === 1
+			},
+		}
+
+		feedbacks.positioningSourceDelayModeFull = {
+			type: 'boolean',
+			name: 'Positioning - Source Delay Mode Full',
+			description: 'Active when Source Delay Mode is Full',
+			defaultStyle: { ...COLORS.full },
+			options: [
+				{
+					type: 'number',
+					label: 'Sound Object',
+					id: 'soundobject',
+					default: 1,
+					min: 1,
+					max: self.matrixInputCount,
+					required: true,
+				},
+			],
+			callback: function (feedback) {
+				const so = feedback.options.soundobject
+				return Number(self.DATA?.positioning?.[so]?.sourceDelayMode) === 2
 			},
 		}
 

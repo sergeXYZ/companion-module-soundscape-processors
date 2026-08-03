@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	CHOICES_REVERB_ROOMS: [
 		{ id: 0, label: 'Off' },
 		{ id: 1, label: 'Modern - small / Blaibach Concert Hall' },

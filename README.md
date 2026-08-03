@@ -4,7 +4,9 @@ Bitfocus Companion module for **d&b audiotechnik Soundscape Engines** (DS110, DS
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
-Module id: `soundscape-processors` · Current version: **2.0.0-beta.10**
+Module id: `soundscape-processors` · Current version: **2.0.0-beta.15**
+
+Requires **Companion 4.3+** (tested with Companion 5) — Module API 2.0 / Node 22.
 
 See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedback overview. Internal research notes: [`COMPANION-DNB-MODULE-RESEARCH.md`](COMPANION-DNB-MODULE-RESEARCH.md).
 
@@ -15,15 +17,18 @@ See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedbac
 - Expanded **value/display feedbacks** (matrix gain/delay, SOR gain, function groups, positioning, En-Space, scene)
 - Sound Object Routing support for up to **32 function groups**
 - Mute presets with d&b R1-style colors (Input / Output / Reverb Processing / SOR)
+- **Stable mute/parameter presets**: All + example buttons; active colors from Colours/ (Mute/Delay/EQ/Polarity/Tight/Full), else grey
+
 
 ## Development
 
 ```bash
+# Needs Node 22+
 yarn install
-npx companion-module-build --dev --prerelease
+yarn build
 ```
 
-Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.10` on the connection.
+Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.15` on the connection.
 
 ### Test page helper
 
@@ -31,6 +36,11 @@ Install the built package into Companion’s modules folder (or use a local modu
 
 ## Version history
 
+- **2.0.0-beta.15** — Presets for main parameters; Colours/ state colors (Delay/EQ/Polarity/Tight/Full) + grey default
+- **2.0.0-beta.14** — Stable mute presets: grey R1 example buttons + clear how-to text (no purple)
+- **2.0.0-beta.13** — Purple mute examples: inverted feedback for grey unmuted + red muted
+- **2.0.0-beta.12** — Mute presets: Mute All + purple configure-me examples (no template flood)
+- **2.0.0-beta.11** — Module API 2.0; mute presets as template groups; SOR Mute All
 - **2.0.0-beta.10** — R1 mute colors; mute presets (Input/Output/Reverb/SOR); advanced feedback green text size 14
 - **2.0.0-beta.9** — Test release
 - **2.0.0-beta.8** — Dual polling intervals (continuous / discrete)

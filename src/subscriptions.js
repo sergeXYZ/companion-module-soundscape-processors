@@ -91,7 +91,10 @@ const PATH_BUILDERS = {
 
 	// Positioning
 	positioningSourceSpread: (o) => [`/positioning/source_spread/${optionNumber(o, 'matrixinput')}`],
-	positioningSourceDelayMode: (o) => [`/positioning/source_delaymode/${optionNumber(o, 'matrixinput')}`],
+	positioningSourceDelayMode: (o) => [`/positioning/source_delaymode/${optionNumber(o, 'soundobject')}`],
+	positioningSourceDelayModeTight: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
+	positioningSourceDelayModeFull: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
+	setPositioningSourceDelayMode: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
 	positioningSourcePosition: (o) => [`/positioning/source_position/${optionNumber(o, 'matrixinput')}`],
 	positioningSourcePositionX: (o) => [`/positioning/source_position_x/${optionNumber(o, 'matrixinput')}`],
 	positioningSourcePositionY: (o) => [`/positioning/source_position_y/${optionNumber(o, 'matrixinput')}`],
@@ -99,7 +102,6 @@ const PATH_BUILDERS = {
 	setPositioningSourceSpread: (o) => PATH_BUILDERS.positioningSourceSpread(o),
 	increasePositioningSourceSpread: (o) => PATH_BUILDERS.positioningSourceSpread(o),
 	decreasePositioningSourceSpread: (o) => PATH_BUILDERS.positioningSourceSpread(o),
-	setPositioningSourceDelayMode: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
 	setPositioningSourcePosition: (o) => PATH_BUILDERS.positioningSourcePosition(o),
 	setPositioningSourcePositionXY: (o) => [
 		`/positioning/source_position_xy/${optionNumber(o, 'matrixinput')}`,
@@ -242,7 +244,7 @@ function classifyPollPath(path) {
 	return 'continuous'
 }
 
-module.exports = {
+export default {
 	PATH_BUILDERS,
 	CORE_STATUS_PATHS,
 	classifyPollPath,

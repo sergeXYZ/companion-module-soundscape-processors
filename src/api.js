@@ -1,8 +1,7 @@
-const { InstanceStatus } = require('@companion-module/base')
+import { InstanceStatus } from '@companion-module/base'
+import OSC from 'osc'
 
-const OSC = require('osc')
-
-module.exports = {
+export default {
 	isPollingEnabled() {
 		return this.config?.polling === true || this.config?.polling === 1
 	},
@@ -919,16 +918,34 @@ module.exports = {
 				self.checkFeedbacks('soundObjectRoutingMute')
 			} else if (address.indexOf('/soundobjectrouting/gain/') !== -1) {
 				self.checkFeedbacks('soundObjectRoutingGain')
+			} else if (address.indexOf('/positioning/source_delaymode/') !== -1) {
+				self.checkFeedbacks('positioningSourceDelayModeTight', 'positioningSourceDelayModeFull')
 			} else if (address.indexOf('/matrixinput/gain/') !== -1) {
 				self.checkFeedbacks('matrixInputGain')
 			} else if (address.indexOf('/matrixinput/mute/') !== -1) {
 				self.checkFeedbacks('matrixInputMute')
+			} else if (address.indexOf('/matrixinput/delayenable/') !== -1) {
+				self.checkFeedbacks('matrixInputDelayEnable')
+			} else if (address.indexOf('/matrixinput/eqenable/') !== -1) {
+				self.checkFeedbacks('matrixInputEQEnable')
+			} else if (address.indexOf('/matrixinput/polarity/') !== -1) {
+				self.checkFeedbacks('matrixInputPolarity')
 			} else if (address.indexOf('/matrixoutput/gain/') !== -1) {
 				self.checkFeedbacks('matrixOutputGain')
 			} else if (address.indexOf('/matrixoutput/mute/') !== -1) {
 				self.checkFeedbacks('matrixOutputMute')
+			} else if (address.indexOf('/matrixoutput/delayenable/') !== -1) {
+				self.checkFeedbacks('matrixOutputDelayEnable')
+			} else if (address.indexOf('/matrixoutput/eqenable/') !== -1) {
+				self.checkFeedbacks('matrixOutputEQEnable')
+			} else if (address.indexOf('/matrixoutput/polarity/') !== -1) {
+				self.checkFeedbacks('matrixOutputPolarity')
 			} else if (address.indexOf('/matrixnode/gain/') !== -1) {
 				self.checkFeedbacks('matrixNodeGain')
+			} else if (address.indexOf('/matrixnode/enable/') !== -1) {
+				self.checkFeedbacks('matrixNodeEnable')
+			} else if (address.indexOf('/matrixnode/delayenable/') !== -1) {
+				self.checkFeedbacks('matrixNodeDelayEnable')
 			} else if (address.indexOf('/scene/') !== -1) {
 				self.checkFeedbacks('sceneIndex')
 			} else {
