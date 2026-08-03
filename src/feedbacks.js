@@ -9,6 +9,10 @@ module.exports = {
 		const colorRed = combineRgb(255, 0, 0) // Red
 		const colorGreen = combineRgb(0, 255, 0) // Green
 		const colorBlack = combineRgb(0, 0, 0) // Black
+		// d&b R1 defaults sampled from screenshots (Mute switch)
+		const r1MuteOnBg = combineRgb(216, 43, 43) // muted / active
+		const r1MuteOffBg = combineRgb(135, 135, 135) // unmuted (button base style reference)
+		const r1MuteText = combineRgb(255, 255, 255)
 		const advancedTextStyle = (text) => ({
 			text,
 			color: colorGreen,
@@ -20,8 +24,8 @@ module.exports = {
 			name: 'Matrix Input - Mute',
 			description: 'Change the button color based on the Matrix Input Mute State',
 			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
+				color: r1MuteText,
+				bgcolor: r1MuteOnBg,
 			},
 			options: [
 				{
@@ -278,8 +282,8 @@ module.exports = {
 			name: 'Matrix Output - Mute',
 			description: 'Change the button color based on the Matrix Output Mute State',
 			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
+				color: r1MuteText,
+				bgcolor: r1MuteOnBg,
 			},
 			options: [
 				{
@@ -474,8 +478,8 @@ module.exports = {
 			name: 'Reverb Input Processing - Mute',
 			description: 'Change the button color based on the Reverb Input Processing Mute State',
 			defaultStyle: {
-				color: colorWhite,
-				bgcolor: colorRed,
+				color: r1MuteText,
+				bgcolor: r1MuteOnBg,
 			},
 			options: [
 				{
@@ -536,8 +540,8 @@ module.exports = {
 			name: 'Sound Object Routing - Mute',
 			description: 'Change the button color based on the Sound Object Routing Mute State',
 			defaultStyle: {
-				color: colorBlack,
-				bgcolor: colorRed,
+				color: r1MuteText,
+				bgcolor: r1MuteOnBg,
 			},
 			options: [
 				{

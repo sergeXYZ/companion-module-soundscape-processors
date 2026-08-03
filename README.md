@@ -4,7 +4,7 @@ Bitfocus Companion module for **d&b audiotechnik Soundscape Engines** (DS110, DS
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
-Module id: `soundscape-processors` · Current version: **2.0.0-beta.9**
+Module id: `soundscape-processors` · Current version: **2.0.0-beta.9.001**
 
 See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedback overview. Internal research notes: [`COMPANION-DNB-MODULE-RESEARCH.md`](COMPANION-DNB-MODULE-RESEARCH.md).
 
@@ -14,6 +14,7 @@ See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedbac
 - **Dual poll intervals** — continuous (gain, meters, positions) vs discrete (mute, enable, names, scene)
 - Expanded **value/display feedbacks** (matrix gain/delay, SOR gain, function groups, positioning, En-Space, scene)
 - Sound Object Routing support for up to **32 function groups**
+- Mute presets with d&b R1-style colors (Input / Output / Reverb Processing / SOR)
 
 ## Development
 
@@ -22,7 +23,7 @@ yarn install
 npx companion-module-build --dev --prerelease
 ```
 
-Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.9` on the connection.
+Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.9.001` on the connection.
 
 ### Test page helper
 
@@ -30,6 +31,7 @@ Install the built package into Companion’s modules folder (or use a local modu
 
 ## Version history
 
+- **2.0.0-beta.9.001** — R1 mute colors; mute presets (Input/Output/Reverb/SOR); advanced feedback green text size 14
 - **2.0.0-beta.9** — Test release
 - **2.0.0-beta.8** — Dual polling intervals (continuous / discrete)
 - **2.0.0-beta.7** — Subscription-based polling; more display feedbacks
