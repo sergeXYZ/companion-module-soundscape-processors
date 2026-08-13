@@ -4,7 +4,7 @@ Bitfocus Companion module for **d&b audiotechnik Soundscape Engines** (DS110, DS
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
-Module id: `soundscape-processors` · Current version: **2.0.0-beta.15.1**
+Module id: `soundscape-processors` · Current version: **2.0.0-beta.15.3**
 
 Requires **Companion 4.3+** (tested with Companion 5) — Module API 2.0 / Node 22.
 
@@ -28,7 +28,7 @@ yarn install
 yarn build
 ```
 
-Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.15.1` on the connection.
+Install the built package into Companion’s modules folder (or use a local module path), then select version `2.0.0-beta.15.3` on the connection.
 
 ### Test page helper
 
@@ -36,6 +36,8 @@ Install the built package into Companion’s modules folder (or use a local modu
 
 ## Version history
 
+- **2.0.0-beta.15.3** — Delay Mode buttons show Off/Tight/Full on the display
+- **2.0.0-beta.15.2** — SOR Mute All per Function Group (local variable functiongroup)
 - **2.0.0-beta.15.1** — Source Delay Mode: cycle button + All latch (replaces three single-state presets)
 - **2.0.0-beta.15** — Presets for main parameters; Colours/ state colors (Delay/EQ/Polarity/Tight/Full) + grey default
 - **2.0.0-beta.14** — Stable mute presets: grey R1 example buttons + clear how-to text (no purple)

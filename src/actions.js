@@ -2363,7 +2363,12 @@ export default {
 				if (self.DATA?.positioning?.[so]) {
 					self.DATA.positioning[so].sourceDelayMode = sourceDelayMode
 				}
-				self.checkFeedbacks('positioningSourceDelayModeTight', 'positioningSourceDelayModeFull')
+				self.checkFeedbacks(
+					'positioningSourceDelayMode',
+					'positioningSourceDelayModeAll',
+					'positioningSourceDelayModeTight',
+					'positioningSourceDelayModeFull'
+				)
 			},
 		}
 
@@ -2402,7 +2407,12 @@ export default {
 				if (self.DATA?.positioning?.[so]) {
 					self.DATA.positioning[so].sourceDelayMode = next
 				}
-				self.checkFeedbacks('positioningSourceDelayModeTight', 'positioningSourceDelayModeFull')
+				self.checkFeedbacks(
+					'positioningSourceDelayMode',
+					'positioningSourceDelayModeAll',
+					'positioningSourceDelayModeTight',
+					'positioningSourceDelayModeFull'
+				)
 			},
 		}
 
@@ -2434,6 +2444,21 @@ export default {
 				]
 
 				self.sendCommand('/positioning/source_delaymode/*', args)
+
+				self.DATA.positioningDelayModeAll = sourceDelayMode
+				if (self.DATA?.positioning) {
+					for (let i = 1; i < self.DATA.positioning.length; i++) {
+						if (self.DATA.positioning[i]) {
+							self.DATA.positioning[i].sourceDelayMode = sourceDelayMode
+						}
+					}
+				}
+				self.checkFeedbacks(
+					'positioningSourceDelayMode',
+					'positioningSourceDelayModeAll',
+					'positioningSourceDelayModeTight',
+					'positioningSourceDelayModeFull'
+				)
 			},
 		}
 
@@ -4467,6 +4492,46 @@ export default {
 				]
 
 				self.sendCommand('/soundobjectrouting/mute/*/*', args)
+			},
+		}
+
+		actions.setSoundObjectRoutingMuteAllInFunctionGroup = {
+			name: 'Sound Object Routing - Mute All in Function Group',
+			description: 'Mute or Unmute all Sound Objects in one Function Group',
+			options: [
+				{
+					type: 'number',
+					label: 'Function Group',
+					id: 'functiongroup',
+					default: 1,
+					min: 1,
+					max: self.FUNCTION_GROUP_COUNT,
+					required: true,
+				},
+				{
+					type: 'dropdown',
+					label: 'Mute',
+					id: 'mute',
+					default: 1,
+					choices: [
+						{ id: 1, label: 'Mute' },
+						{ id: 0, label: 'Unmute' },
+					],
+				},
+			],
+			callback: async function (action) {
+				let options = action.options
+				let functionGroup = options.functiongroup
+				let mute = options.mute
+
+				let args = [
+					{
+						type: 'i',
+						value: mute,
+					},
+				]
+
+				self.sendCommand('/soundobjectrouting/mute/' + functionGroup + '/*', args)
 			},
 		}
 

@@ -917,6 +917,69 @@ export default {
 		}
 
 		
+		feedbacks.positioningSourceDelayMode = {
+			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Positioning - Source Delay Mode',
+			description: 'Show Off / Tight / Full for a Sound Object Source Delay Mode',
+			options: [
+				{
+					type: 'number',
+					label: 'Sound Object',
+					id: 'soundobject',
+					default: 1,
+					min: 1,
+					max: self.matrixInputCount,
+					required: true,
+				},
+			],
+			callback: function (feedback) {
+				const so = feedback.options.soundobject
+				const mode = Number(self.DATA?.positioning?.[so]?.sourceDelayMode)
+				let label = 'Off'
+				let style = { ...COLORS.grey }
+				if (mode === 1) {
+					label = 'Tight'
+					style = { ...COLORS.tight }
+				} else if (mode === 2) {
+					label = 'Full'
+					style = { ...COLORS.full }
+				}
+				return {
+					text: `SO${so}\n${label}`,
+					size: '14',
+					...style,
+				}
+			},
+		}
+
+		feedbacks.positioningSourceDelayModeAll = {
+			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Positioning - Source Delay Mode All (last set)',
+			description: 'Show Off / Tight / Full for the last Delay Mode sent to all Sound Objects',
+			options: [],
+			callback: function () {
+				const mode = Number(self.DATA?.positioningDelayModeAll)
+				let label = 'Off'
+				let style = { ...COLORS.grey }
+				if (mode === 1) {
+					label = 'Tight'
+					style = { ...COLORS.tight }
+				} else if (mode === 2) {
+					label = 'Full'
+					style = { ...COLORS.full }
+				} else if (!Number.isFinite(mode)) {
+					label = '—'
+				}
+				return {
+					text: `SO ALL\n${label}`,
+					size: '14',
+					...style,
+				}
+			},
+		}
+
 		feedbacks.positioningSourceDelayModeTight = {
 			type: 'boolean',
 			name: 'Positioning - Source Delay Mode Tight',

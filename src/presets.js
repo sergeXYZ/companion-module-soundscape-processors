@@ -666,6 +666,36 @@ export default {
 			actionId: 'setSoundObjectRoutingMuteAll',
 			optionKey: 'mute',
 		})
+
+		presets.sor_mute_all_fg_example = {
+			type: 'simple',
+			name: 'SOR Mute All in Function Group — EXAMPLE: change local variable "functiongroup"',
+			keywords: ['example', 'configure', 'sor', 'mute', 'all'],
+			style: { ...buttonBaseStyle, text: 'FG$(local:functiongroup) ALL\nMute' },
+			localVariables: [{ variableType: 'simple', variableName: 'functiongroup', startupValue: 1 }],
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'setSoundObjectRoutingMuteAllInFunctionGroup',
+							options: { functiongroup: expr('$(local:functiongroup)'), mute: 1 },
+						},
+					],
+					up: [],
+				},
+				{
+					down: [
+						{
+							actionId: 'setSoundObjectRoutingMuteAllInFunctionGroup',
+							options: { functiongroup: expr('$(local:functiongroup)'), mute: 0 },
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [],
+		}
+
 		presets.sor_mute_example = {
 			type: 'simple',
 			name: 'SOR Mute — EXAMPLE: change "functiongroup" + "soundobject"',
@@ -728,13 +758,17 @@ export default {
 		pushSection({
 			id: 'sound-object-routing',
 			name: 'Sound Object Routing',
-			description: howToLocal('"functiongroup" and "soundobject"'),
+			description:
+				howToLocal('"functiongroup" and "soundobject"') +
+				' Mute All (FG) mutes every Sound Object in one Function Group — set local variable "functiongroup".',
 			definitions: [
 				{
 					id: 'sor-mute',
 					type: 'simple',
 					name: 'Mute',
-					presets: ['sor_mute_all', 'sor_mute_example'],
+					description:
+						'ALL = every FG/SO. Mute All FG = one Function Group (edit local variable functiongroup). Example = single SO.',
+					presets: ['sor_mute_all', 'sor_mute_all_fg_example', 'sor_mute_example'],
 				},
 				{
 					id: 'sor-gain',
@@ -749,7 +783,7 @@ export default {
 		presets.pos_delay_mode_all = {
 			type: 'simple',
 			name: 'Source Delay Mode All',
-			style: { ...buttonBaseStyle, text: 'SO ALL\nDelayMode' },
+			style: { ...buttonBaseStyle, text: 'SO ALL\nOff' },
 			steps: [
 				{
 					down: [{ actionId: 'setPositioningSourceDelayModeAll', options: { sourcedelaymode: 0 } }],
@@ -764,14 +798,19 @@ export default {
 					up: [],
 				},
 			],
-			feedbacks: [],
+			feedbacks: [
+				{
+					feedbackId: 'positioningSourceDelayModeAll',
+					options: {},
+				},
+			],
 		}
 
 		presets.pos_delay_mode_cycle_example = {
 			type: 'simple',
 			name: 'Source Delay Mode Cycle — EXAMPLE: change "soundobject" (Off → Tight → Full)',
 			keywords: ['example', 'configure', 'cycle'],
-			style: { ...buttonBaseStyle, text: 'SO$(local:soundobject)\nDelayMode' },
+			style: { ...buttonBaseStyle, text: 'SO$(local:soundobject)\nOff' },
 			localVariables: [{ variableType: 'simple', variableName: 'soundobject', startupValue: 1 }],
 			steps: [
 				{
@@ -786,14 +825,8 @@ export default {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'positioningSourceDelayModeTight',
+					feedbackId: 'positioningSourceDelayMode',
 					options: { soundobject: expr('$(local:soundobject)') },
-					style: { ...COLORS.tight },
-				},
-				{
-					feedbackId: 'positioningSourceDelayModeFull',
-					options: { soundobject: expr('$(local:soundobject)') },
-					style: { ...COLORS.full },
 				},
 			],
 		}
@@ -831,14 +864,15 @@ export default {
 			id: 'positioning',
 			name: 'Positioning',
 			description:
-				'Delay Mode: Cycle button steps Off → Tight → Full (grey / orange / olive). All button is a 3-step latch for every Sound Object. ' +
+				'Delay Mode buttons show Off / Tight / Full on the display (grey / orange / olive). Cycle = one SO; All = latch for every Sound Object. ' +
 				howToLocal('"soundobject"'),
 			definitions: [
 				{
 					id: 'pos-delay-mode',
 					type: 'simple',
 					name: 'Source Delay Mode',
-					description: 'All = latch Off/Tight/Full for every SO. Example = cycle one SO (edit local variable soundobject).',
+					description:
+						'All = latch Off/Tight/Full for every SO (display shows last set). Example = cycle one SO (edit local variable soundobject).',
 					presets: ['pos_delay_mode_all', 'pos_delay_mode_cycle_example'],
 				},
 				{

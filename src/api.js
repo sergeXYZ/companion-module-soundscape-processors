@@ -162,6 +162,7 @@ export default {
 				sourcePositionY: null,
 				sourcePositionZ: null,
 			})),
+			positioningDelayModeAll: null,
 
 			// Speaker position data (per matrix output)
 			speakerPosition: Array.from({ length: self.matrixOutputCount + 1 }, () => ({
@@ -919,7 +920,12 @@ export default {
 			} else if (address.indexOf('/soundobjectrouting/gain/') !== -1) {
 				self.checkFeedbacks('soundObjectRoutingGain')
 			} else if (address.indexOf('/positioning/source_delaymode/') !== -1) {
-				self.checkFeedbacks('positioningSourceDelayModeTight', 'positioningSourceDelayModeFull')
+				self.checkFeedbacks(
+					'positioningSourceDelayMode',
+					'positioningSourceDelayModeAll',
+					'positioningSourceDelayModeTight',
+					'positioningSourceDelayModeFull'
+				)
 			} else if (address.indexOf('/matrixinput/gain/') !== -1) {
 				self.checkFeedbacks('matrixInputGain')
 			} else if (address.indexOf('/matrixinput/mute/') !== -1) {

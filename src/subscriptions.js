@@ -91,7 +91,10 @@ const PATH_BUILDERS = {
 
 	// Positioning
 	positioningSourceSpread: (o) => [`/positioning/source_spread/${optionNumber(o, 'matrixinput')}`],
-	positioningSourceDelayMode: (o) => [`/positioning/source_delaymode/${optionNumber(o, 'soundobject')}`],
+	positioningSourceDelayMode: (o) => [
+		`/positioning/source_delaymode/${optionNumber(o, 'soundobject', optionNumber(o, 'matrixinput'))}`,
+	],
+	positioningSourceDelayModeAll: () => ['/positioning/source_delaymode/*'],
 	positioningSourceDelayModeTight: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
 	positioningSourceDelayModeFull: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
 	setPositioningSourceDelayMode: (o) => PATH_BUILDERS.positioningSourceDelayMode(o),
@@ -189,6 +192,9 @@ const PATH_BUILDERS = {
 	],
 	setSoundObjectRoutingMute: (o) => PATH_BUILDERS.soundObjectRoutingMute(o),
 	toggleSoundObjectRoutingMute: (o) => PATH_BUILDERS.soundObjectRoutingMute(o),
+	setSoundObjectRoutingMuteAllInFunctionGroup: (o) => [
+		`/soundobjectrouting/mute/${optionNumber(o, 'functiongroup')}/*`,
+	],
 	setSoundObjectRoutingGain: (o) => PATH_BUILDERS.soundObjectRoutingGain(o),
 	increaseSoundObjectRoutingGain: (o) => PATH_BUILDERS.soundObjectRoutingGain(o),
 	decreaseSoundObjectRoutingGain: (o) => PATH_BUILDERS.soundObjectRoutingGain(o),
