@@ -1,6 +1,6 @@
 # companion-module-soundscape-processors
 
-Bitfocus Companion module for **d&b audiotechnik Soundscape Engines** (DS110, DS100, DS100M) over OSC/UDP.
+Bitfocus Companion module for **d&b audiotechnik Soundscape Processors** (DS110; DS100; DS100M) over OSC/UDP.
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
@@ -36,6 +36,7 @@ Install the built package into Companion’s modules folder (or use a local modu
 
 ## Version history
 
+- **2.0.0-beta.16.1** — Rename module to "d&b audiotechnik Soundscape Processors"
 - **2.0.0-beta.16** — Stream Deck rotary presets (Gain/Delay/SOR/Spread/Position X/Y)
 - **2.0.0-beta.15** — Presets for main parameters; Colours/ state colors (Delay/EQ/Polarity/Tight/Full) + grey default
 - **2.0.0-beta.14** — Stable mute presets: grey R1 example buttons + clear how-to text (no purple)
@@ -47,7 +48,7 @@ Install the built package into Companion’s modules folder (or use a local modu
 - **2.0.0-beta.8** — Dual polling intervals (continuous / discrete)
 - **2.0.0-beta.7** — Subscription-based polling; more display feedbacks
 - **2.0.0-beta.6** — SOR/matrix variable display fixes
-- **2.0.0-beta.2** — Renamed product branding for Soundscape Engines
+- **2.0.0-beta.2** — Renamed product branding for Soundscape Processors
 - **2.0.0-beta.1** — Fork from upstream v1.1.0; module id `soundscape-processors`
 
 ## License

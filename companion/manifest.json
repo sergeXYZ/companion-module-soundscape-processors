@@ -2,10 +2,10 @@
 	"$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
 	"id": "soundscape-processors",
 	"type": "connection",
-	"name": "db-soundscape-engines",
-	"shortname": "Soundscape",
-	"description": "[BETA] d&b audiotechnik Soundscape Engines: DS110, DS100, DS100M",
-	"version": "2.0.0-beta.16",
+	"name": "d&b audiotechnik Soundscape Processors",
+	"shortname": "Soundscape Proc.",
+	"description": "[BETA] d&b audiotechnik Soundscape Processors: DS110; DS100; DS100M",
+	"version": "2.0.0-beta.16.1",
 	"license": "MIT",
 	"repository": "git+https://github.com/sergeXYZ/companion-module-soundscape-processors.git",
 	"bugs": "https://github.com/sergeXYZ/companion-module-soundscape-processors/issues",
@@ -22,7 +22,7 @@
 		"apiVersion": "0.0.0",
 		"entrypoint": "../index.js"
 	},
-	"manufacturer": "d&b audiotechnik Soundscape Engines",
+	"manufacturer": "d&b audiotechnik",
 	"products": ["DS110", "DS100", "DS100M"],
 	"keywords": ["DSP", "Audio", "Soundscape", "DS110", "DS100", "DS100M"]
 }
