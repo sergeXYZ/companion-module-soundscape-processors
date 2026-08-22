@@ -14,6 +14,8 @@ export default {
 		add('status_matrixinputcount', 'Status - Matrix Input Count')
 		add('status_matrixoutputcount', 'Status - Matrix Output Count')
 
+		add('special_enspace_input', 'Special En-Space - Selected Matrix Input')
+
 		for (let i = 1; i <= self.matrixInputCount; i++) {
 			add(`matrixinput${i}_mute`, `Matrix Input ${i} - Mute`)
 			add(`matrixinput${i}_gain`, `Matrix Input ${i} - Gain`)
@@ -57,5 +59,8 @@ export default {
 		add('soundobjectrouting_mute_1_1', 'Sound Object Routing Mute FG1 / SO1')
 
 		self.setVariableDefinitions(variables)
+		self.setVariableValues({
+			special_enspace_input: self.DATA?.specialEnSpaceInput ?? 1,
+		})
 	},
 }

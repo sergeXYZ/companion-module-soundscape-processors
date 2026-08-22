@@ -1,5 +1,6 @@
 import { combineRgb } from '@companion-module/base'
 import { COLORS } from './colours.js'
+import { getEnSpaceRoomPng64 } from './enspace-rooms.js'
 
 export default {
 	initFeedbacks: function () {
@@ -11,6 +12,7 @@ export default {
 			text,
 			color: colorGreen,
 			size: 14,
+			bgcolor: COLORS.display.bgcolor,
 		})
 
 		feedbacks.matrixInputMute = {
@@ -526,7 +528,7 @@ export default {
 
 		feedbacks.soundObjectRoutingGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Sound Object Routing - Gain',
 			description: 'Show the current Sound Object Routing Gain on the button',
 			options: [
@@ -565,7 +567,7 @@ export default {
 
 		feedbacks.matrixInputGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Input - Gain',
 			description: 'Show the current Matrix Input Gain on the button',
 			options: [
@@ -589,7 +591,7 @@ export default {
 
 		feedbacks.matrixInputDelay = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Input - Delay',
 			description: 'Show the current Matrix Input Delay on the button',
 			options: [
@@ -613,7 +615,7 @@ export default {
 
 		feedbacks.matrixInputChannelName = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Input - Channel Name',
 			description: 'Show the Matrix Input channel name on the button',
 			options: [
@@ -636,9 +638,9 @@ export default {
 
 		feedbacks.matrixInputReverbSendGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
-			name: 'Matrix Input - Reverb Send Gain',
-			description: 'Show the Matrix Input reverb send gain on the button',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Matrix Input - En-Space Send Gain',
+			description: 'Show the En-Space send gain (/matrixinput/reverbsendgain) on the button',
 			options: [
 				{
 					type: 'number',
@@ -660,7 +662,7 @@ export default {
 
 		feedbacks.matrixOutputGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Output - Gain',
 			description: 'Show the current Matrix Output Gain on the button',
 			options: [
@@ -684,7 +686,7 @@ export default {
 
 		feedbacks.matrixOutputDelay = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Output - Delay',
 			description: 'Show the current Matrix Output Delay on the button',
 			options: [
@@ -708,7 +710,7 @@ export default {
 
 		feedbacks.matrixOutputChannelName = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Output - Channel Name',
 			description: 'Show the Matrix Output channel name on the button',
 			options: [
@@ -731,7 +733,7 @@ export default {
 
 		feedbacks.matrixNodeGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Node - Gain',
 			description: 'Show the current Matrix Node Gain on the button',
 			options: [
@@ -765,7 +767,7 @@ export default {
 
 		feedbacks.matrixNodeDelay = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Matrix Node - Delay',
 			description: 'Show the current Matrix Node Delay on the button',
 			options: [
@@ -799,9 +801,9 @@ export default {
 
 		feedbacks.reverbInputGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
-			name: 'Reverb Input - Gain',
-			description: 'Show the Reverb Input Gain on the button',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'En-Space Input Matrix - Gain',
+			description: 'Show En-Space input matrix gain (/reverbinput/gain/{input}/{zone})',
 			options: [
 				{
 					type: 'number',
@@ -812,10 +814,20 @@ export default {
 					max: self.matrixInputCount,
 					required: true,
 				},
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
+					required: true,
+				},
 			],
 			callback: function (feedback) {
 				const input = feedback.options.matrixinput
-				const gain = self.DATA?.reverbInput?.[input]?.gain
+				const zone = feedback.options.zone
+				const gain = self.DATA?.reverbInput?.[input]?.[zone]?.gain
 				if (gain === null || gain === undefined) return advancedTextStyle('— dB')
 				return advancedTextStyle(`${Number(gain).toFixed(2)} dB`)
 			},
@@ -823,7 +835,7 @@ export default {
 
 		feedbacks.reverbInputProcessingGain = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Reverb Input Processing - Gain',
 			description: 'Show the Reverb Input Processing Gain on the button',
 			options: [
@@ -847,7 +859,7 @@ export default {
 
 		feedbacks.functionGroupSpreadFactor = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Function Group - Spread Factor',
 			description: 'Show the Function Group spread factor on the button',
 			options: [
@@ -871,7 +883,7 @@ export default {
 
 		feedbacks.functionGroupDelay = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Function Group - Delay',
 			description: 'Show the Function Group delay on the button',
 			options: [
@@ -895,7 +907,7 @@ export default {
 
 		feedbacks.functionGroupName = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Function Group - Name',
 			description: 'Show the Function Group name on the button',
 			options: [
@@ -1026,7 +1038,7 @@ export default {
 
 		feedbacks.positioningSourceSpread = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Positioning - Source Spread',
 			description: 'Show the positioning source spread on the button',
 			options: [
@@ -1050,7 +1062,7 @@ export default {
 
 		feedbacks.positioningSourcePositionX = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Positioning - Source Position X',
 			description: 'Show the positioning source X on the button',
 			options: [
@@ -1074,7 +1086,7 @@ export default {
 
 		feedbacks.positioningSourcePositionY = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Positioning - Source Position Y',
 			description: 'Show the positioning source Y on the button',
 			options: [
@@ -1098,20 +1110,36 @@ export default {
 
 		feedbacks.matrixSettingsReverbRoomId = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor', 'png64', 'pngalignment'],
 			name: 'En-Space - Reverb Room Id',
-			description: 'Show the current reverb room id on the button',
+			description: 'Show the current En-Space room name (and photo for rooms 1–9)',
 			options: [],
 			callback: function () {
 				const value = self.DATA?.matrixSettings?.reverbRoomId
-				if (value === null || value === undefined) return advancedTextStyle('—')
-				return advancedTextStyle(`Room ${value}`)
+				if (value === null || value === undefined || value === '') {
+					return advancedTextStyle('—')
+				}
+				const roomId = Number(value)
+				const room = self.CHOICES_REVERB_ROOMS?.find((item) => Number(item.id) === roomId)
+				const label = room?.label || String(value)
+				const png64 = getEnSpaceRoomPng64(roomId)
+				const style = {
+					text: label,
+					color: colorGreen,
+					size: '14',
+					bgcolor: COLORS.display.bgcolor,
+					pngalignment: 'center:center',
+				}
+				if (png64) {
+					style.png64 = png64
+				}
+				return style
 			},
 		}
 
 		feedbacks.matrixSettingsReverbPreDelayFactor = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'En-Space - Reverb Predelay Factor',
 			description: 'Show the reverb predelay factor on the button',
 			options: [],
@@ -1124,7 +1152,7 @@ export default {
 
 		feedbacks.matrixSettingsReverbRearLevel = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'En-Space - Reverb Rear Level',
 			description: 'Show the reverb rear level on the button',
 			options: [],
@@ -1137,7 +1165,7 @@ export default {
 
 		feedbacks.sceneIndex = {
 			type: 'advanced',
-			affectedProperties: ['text', 'color', 'size'],
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Scene - Index / Name',
 			description: 'Show the current scene index and name on the button',
 			options: [],
@@ -1146,6 +1174,115 @@ export default {
 				const name = self.DATA?.sceneName
 				if (index === null || index === undefined) return advancedTextStyle('—')
 				return advancedTextStyle(name ? `${index}\n${name}` : `${index}`)
+			},
+		}
+
+		const specialZoneOnStyles = {
+			1: COLORS.specialZone1On,
+			2: COLORS.specialZone2On,
+			3: COLORS.specialZone3On,
+			4: COLORS.specialZone4On,
+		}
+
+		feedbacks.specialEnSpaceInput = {
+			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Special En-Space - Selected Matrix Input',
+			description: 'Show the Matrix Input selected for the Spezial En-Space Input Bank',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Suffix (e.g. + or -)',
+					id: 'suffix',
+					default: '',
+				},
+			],
+			callback: function (feedback) {
+				const input = typeof self.getSpecialEnSpaceInput === 'function' ? self.getSpecialEnSpaceInput() : 1
+				const suffix = feedback.options.suffix ? String(feedback.options.suffix) : ''
+				return {
+					text: suffix ? `In ${input}\n${suffix}` : `In ${input}`,
+					color: COLORS.specialTextGreen,
+					size: 14,
+					bgcolor: COLORS.grey.bgcolor,
+				}
+			},
+		}
+
+		feedbacks.specialEnSpaceSendGain = {
+			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Special En-Space - Send Gain',
+			description: 'Show En-Space send gain of the selected Matrix Input',
+			options: [],
+			callback: function () {
+				const input =
+					typeof self.getSpecialEnSpaceInput === 'function' ? self.getSpecialEnSpaceInput() : 1
+				const entry = self.DATA?.matrixInput?.[input] ?? self.DATA?.matrixInput?.[String(input)]
+				const gain = entry?.reverbSendGain
+				const valueText =
+					gain === null || gain === undefined ? '— dB' : `${Number(gain).toFixed(1)} dB`
+				return {
+					text: `In ${input}\n${valueText}`,
+					color: COLORS.specialTextGreen,
+					size: 14,
+					bgcolor: COLORS.display.bgcolor,
+				}
+			},
+		}
+
+		feedbacks.specialEnSpaceInputName = {
+			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Special En-Space - Input Channel Name',
+			description: 'Show the DS100 channel name of the selected Matrix Input (/matrixinput/channelname)',
+			options: [],
+			callback: function () {
+				const input =
+					typeof self.getSpecialEnSpaceInput === 'function' ? self.getSpecialEnSpaceInput() : 1
+				const entry = self.DATA?.matrixInput?.[input] ?? self.DATA?.matrixInput?.[String(input)]
+				const name = entry?.channelName
+				const nameText = name !== null && name !== undefined && String(name).length > 0 ? String(name) : '—'
+				return {
+					text: `In ${input}\n${nameText}`,
+					color: COLORS.specialTextGreen,
+					size: 14,
+					bgcolor: COLORS.display.bgcolor,
+				}
+			},
+		}
+
+		feedbacks.specialEnSpaceZoneGain = {
+			type: 'advanced',
+			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
+			name: 'Special En-Space - Zone Gain',
+			description:
+				'Zone gain for selected Matrix Input: black when ≈ -120, zone colour when ≈ 0 (green text)',
+			options: [
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
+					required: true,
+				},
+			],
+			callback: function (feedback) {
+				const zone = Number(feedback.options.zone) || 1
+				const input = typeof self.getSpecialEnSpaceInput === 'function' ? self.getSpecialEnSpaceInput() : 1
+				const gain = self.DATA?.reverbInput?.[input]?.[zone]?.gain
+				const isOn = gain !== null && gain !== undefined && Number(gain) > -60
+				const style = isOn ? specialZoneOnStyles[zone] || COLORS.specialZone1On : COLORS.specialZoneOff
+				const valueLabel =
+					gain === null || gain === undefined ? '—' : isOn ? '0' : '-120'
+				return {
+					text: `Z${zone}\n${valueLabel}`,
+					color: style.color,
+					size: 14,
+					bgcolor: style.bgcolor,
+				}
 			},
 		}
 

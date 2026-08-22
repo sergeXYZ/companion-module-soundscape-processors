@@ -4,7 +4,7 @@ Bitfocus Companion module for **d&b audiotechnik Soundscape Processors** (DS110;
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
-Module id: `soundscape-processors` · Current version: **2.0.0-beta.15.4**
+Module id: `soundscape-processors` · Current version: **2.0.0-beta.15.13**
 
 Requires **Companion 4.3+** (tested with Companion 5) — Module API 2.0 / Node 22.
 
@@ -28,7 +28,7 @@ yarn install
 yarn build
 ```
 
-Install the built package into Companion's modules folder (or use a local module path), then select version `2.0.0-beta.15.4` on the connection.
+Install the built package into Companion's modules folder (or use a local module path), then select version `2.0.0-beta.15.13` on the connection.
 
 ### Test page helper
 
@@ -36,6 +36,22 @@ Install the built package into Companion's modules folder (or use a local module
 
 ## Version history
 
+- **2.0.0-beta.15.22** — Spezial Presets: Display Input Name (polled channelname)
+- **2.0.0-beta.15.21** — Spezial Send Display: line1 In N, line2 value dB only
+- **2.0.0-beta.15.20** — Fix Spezial Send Display feedback; rename All In EnSp -120
+- **2.0.0-beta.15.19** — Spezial Send: Display + Rotary; Inc/Dec without feedback; All Inputs Send -120
+- **2.0.0-beta.15.18** — Spezial Presets: All Zones / All Inputs → -120 button
+- **2.0.0-beta.15.17** — Zone toggles default -120; enabling one zone sets others to -120
+- **2.0.0-beta.15.16** — Spezial Presets: En-Space Input Bank (shared input, send ±, zone -120/0)
+- **2.0.0-beta.15.15** — Preset font size back to 14
+- **2.0.0-beta.15.14** — Rotaries in category lists, pink (#FFC0FF), no feedback
+- **2.0.0-beta.15.13** — Rotary presets for all Inc/Dec (↻ increase, ↺ decrease)
+- **2.0.0-beta.15.11** — En-Space Send Inc/Dec All presets
+- **2.0.0-beta.15.10** — Matrix Input presets for En-Space Send + Input Matrix (zone 1–4)
+- **2.0.0-beta.15.9** — En-Space room labels (Modern-small …) + photo backgrounds for rooms 1–9
+- **2.0.0-beta.15.7** — Fix En-Space Room ID polling; show room names on display
+- **2.0.0-beta.15.6** — Inc/Dec presets for Gain, Delay, Spread, Spreadfactor, Position
+- **2.0.0-beta.15.5** — Display presets: rename to Display + function, black background
 - **2.0.0-beta.15.4** — Rename module to "d&b audiotechnik Soundscape Processors"
 - **2.0.0-beta.15.3** — Delay Mode buttons show Off/Tight/Full on the display
 - **2.0.0-beta.15.2** — SOR Mute All per Function Group (local variable functiongroup)

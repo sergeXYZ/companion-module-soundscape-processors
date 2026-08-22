@@ -3289,7 +3289,7 @@ export default {
 			],
 			callback: async function (action) {
 				let options = action.options
-				let reverbRoomId = options.reverbroomid
+				let reverbRoomId = Number(options.reverbroomid)
 
 				let args = [
 					{
@@ -3299,6 +3299,11 @@ export default {
 				]
 
 				self.sendCommand('/matrixsettings/reverbroomid', args)
+
+				if (self.DATA?.matrixSettings) {
+					self.DATA.matrixSettings.reverbRoomId = reverbRoomId
+				}
+				self.checkFeedbacks('matrixSettingsReverbRoomId')
 			},
 		}
 
@@ -3513,8 +3518,8 @@ export default {
 		}
 
 		actions.setMatrixInputReverbSendGain = {
-			name: 'Matrix Input - Reverb Send Gain',
-			description: 'Set the Reverb Send Gain of a Matrix Input',
+			name: 'Matrix Input - Reverb Send Gain (En-Space Input)',
+			description: 'Set the En-Space send gain of a Matrix Input (/matrixinput/reverbsendgain)',
 			options: [
 				{
 					type: 'number',
@@ -3522,7 +3527,7 @@ export default {
 					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixInputCount,
+					max: self.matrixInputCount,
 					required: true,
 				},
 				{
@@ -3548,12 +3553,16 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, args)
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].reverbSendGain = reverbSendGain
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain')
 			},
 		}
 
 		actions.setMatrixInputReverbSendGainAll = {
-			name: 'Matrix Input - Reverb Send Gain (All)',
-			description: 'Set the Reverb Send Gain of all Matrix Inputs',
+			name: 'Matrix Input - Reverb Send Gain All (En-Space Input)',
+			description: 'Set the En-Space send gain of all Matrix Inputs',
 			options: [
 				{
 					type: 'number',
@@ -3577,6 +3586,14 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/reverbsendgain/' + '*', args)
+				if (self.DATA?.matrixInput) {
+					for (let i = 1; i < self.DATA.matrixInput.length; i++) {
+						if (self.DATA.matrixInput[i]) {
+							self.DATA.matrixInput[i].reverbSendGain = reverbSendGain
+						}
+					}
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain')
 			},
 		}
 
@@ -3607,20 +3624,24 @@ export default {
 				let matrixInput = options.matrixinput.toString()
 				let reverbSendGain = options.reverbsendgain
 
-				let currentReverbSendGain = self.DATA?.matrixInput[matrixInput].reverbSendGain
+				let currentReverbSendGain = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
+				if (currentReverbSendGain === null || currentReverbSendGain === undefined) currentReverbSendGain = 0
 
-				if (currentReverbSendGain !== undefined) {
-					let newReverbSendGain = currentReverbSendGain + reverbSendGain
+				let newReverbSendGain = currentReverbSendGain + reverbSendGain
+				if (newReverbSendGain > 24.0) newReverbSendGain = 24.0
 
-					let args = [
-						{
-							type: 'f',
-							value: newReverbSendGain,
-						},
-					]
+				let args = [
+					{
+						type: 'f',
+						value: newReverbSendGain,
+					},
+				]
 
-					self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, args)
+				self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, args)
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].reverbSendGain = newReverbSendGain
 				}
+				self.checkFeedbacks('matrixInputReverbSendGain')
 			},
 		}
 
@@ -3634,14 +3655,14 @@ export default {
 					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixInputCount,
+					max: self.matrixInputCount,
 					required: true,
 				},
 				{
 					type: 'number',
 					label: 'Reverb Send Gain Decrease Amount',
 					id: 'reverbsendgain',
-					default: 0.1,
+					default: 0.5,
 					min: 0.1,
 					required: true,
 				},
@@ -3651,26 +3672,90 @@ export default {
 				let matrixInput = options.matrixinput.toString()
 				let reverbSendGain = options.reverbsendgain
 
-				let currentReverbSendGain = self.DATA?.matrixInput[matrixInput].reverbSendGain
+				let currentReverbSendGain = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
+				if (currentReverbSendGain === null || currentReverbSendGain === undefined) currentReverbSendGain = 0
 
-				if (currentReverbSendGain !== undefined) {
-					let newReverbSendGain = currentReverbSendGain - reverbSendGain
+				let newReverbSendGain = currentReverbSendGain - reverbSendGain
+				if (newReverbSendGain < -120.0) newReverbSendGain = -120.0
 
-					let args = [
-						{
-							type: 'f',
-							value: newReverbSendGain,
-						},
-					]
+				let args = [
+					{
+						type: 'f',
+						value: newReverbSendGain,
+					},
+				]
 
-					self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, args)
+				self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, args)
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].reverbSendGain = newReverbSendGain
 				}
+				self.checkFeedbacks('matrixInputReverbSendGain')
+			},
+		}
+
+		actions.increaseMatrixInputReverbSendGainAll = {
+			name: 'Matrix Input - Increase Reverb Send Gain All (En-Space Input)',
+			description: 'Increase En-Space send gain on every Matrix Input by the step amount',
+			options: [
+				{
+					type: 'number',
+					label: 'Reverb Send Gain Increase Amount',
+					id: 'reverbsendgain',
+					default: 0.5,
+					min: 0.1,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				const step = Number(action.options.reverbsendgain) || 0.5
+				const count = self.matrixInputCount || self.DATA?.matrixInput?.length - 1 || 0
+				for (let i = 1; i <= count; i++) {
+					let current = self.DATA?.matrixInput?.[i]?.reverbSendGain
+					if (current === null || current === undefined) current = 0
+					let next = current + step
+					if (next > 24.0) next = 24.0
+					self.sendCommand('/matrixinput/reverbsendgain/' + i, [{ type: 'f', value: next }])
+					if (self.DATA?.matrixInput?.[i]) {
+						self.DATA.matrixInput[i].reverbSendGain = next
+					}
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain')
+			},
+		}
+
+		actions.decreaseMatrixInputReverbSendGainAll = {
+			name: 'Matrix Input - Decrease Reverb Send Gain All (En-Space Input)',
+			description: 'Decrease En-Space send gain on every Matrix Input by the step amount',
+			options: [
+				{
+					type: 'number',
+					label: 'Reverb Send Gain Decrease Amount',
+					id: 'reverbsendgain',
+					default: 0.5,
+					min: 0.1,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				const step = Number(action.options.reverbsendgain) || 0.5
+				const count = self.matrixInputCount || self.DATA?.matrixInput?.length - 1 || 0
+				for (let i = 1; i <= count; i++) {
+					let current = self.DATA?.matrixInput?.[i]?.reverbSendGain
+					if (current === null || current === undefined) current = 0
+					let next = current - step
+					if (next < -120.0) next = -120.0
+					self.sendCommand('/matrixinput/reverbsendgain/' + i, [{ type: 'f', value: next }])
+					if (self.DATA?.matrixInput?.[i]) {
+						self.DATA.matrixInput[i].reverbSendGain = next
+					}
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain')
 			},
 		}
 
 		actions.setReverbInputGain = {
-			name: 'Reverb Input - Gain',
-			description: 'Set the Gain of a Reverb Input',
+			name: 'Reverb Input - Gain (En-Space Input Matrix)',
+			description: 'Set En-Space input matrix gain (/reverbinput/gain/{input}/{zone})',
 			options: [
 				{
 					type: 'number',
@@ -3678,7 +3763,16 @@ export default {
 					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixInputCount,
+					max: self.matrixInputCount,
+					required: true,
+				},
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
 					required: true,
 				},
 				{
@@ -3694,6 +3788,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput
+				let zone = options.zone
 				let gain = options.gain
 
 				let args = [
@@ -3703,13 +3798,17 @@ export default {
 					},
 				]
 
-				self.sendCommand('/reverbinput/gain/' + matrixInput, args)
+				self.sendCommand('/reverbinput/gain/' + matrixInput + '/' + zone, args)
+				if (self.DATA?.reverbInput?.[matrixInput]?.[zone]) {
+					self.DATA.reverbInput[matrixInput][zone].gain = gain
+				}
+				self.checkFeedbacks('reverbInputGain')
 			},
 		}
 
 		actions.setReverbInputGainAll = {
-			name: 'Reverb Input - Gain (All)',
-			description: 'Set the Gain of all Reverb Inputs',
+			name: 'Reverb Input - Gain All (En-Space Input Matrix)',
+			description: 'Set En-Space input matrix gain for all inputs and zones',
 			options: [
 				{
 					type: 'number',
@@ -3732,13 +3831,23 @@ export default {
 					},
 				]
 
-				self.sendCommand('/reverbinput/gain/' + '*', args)
+				self.sendCommand('/reverbinput/gain/*/*', args)
+				if (self.DATA?.reverbInput) {
+					for (let i = 1; i < self.DATA.reverbInput.length; i++) {
+						for (let z = 1; z <= 4; z++) {
+							if (self.DATA.reverbInput[i]?.[z]) {
+								self.DATA.reverbInput[i][z].gain = gain
+							}
+						}
+					}
+				}
+				self.checkFeedbacks('reverbInputGain')
 			},
 		}
 
 		actions.increaseReverbInputGain = {
-			name: 'Reverb Input - Increase Gain',
-			description: 'Increase the Gain of a Reverb Input',
+			name: 'Reverb Input - Increase Gain (En-Space Input Matrix)',
+			description: 'Increase En-Space input matrix gain for one input/zone',
 			options: [
 				{
 					type: 'number',
@@ -3746,14 +3855,23 @@ export default {
 					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixInputCount,
+					max: self.matrixInputCount,
+					required: true,
+				},
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
 					required: true,
 				},
 				{
 					type: 'number',
 					label: 'Gain Increase Amount',
 					id: 'gain',
-					default: 0.1,
+					default: 0.5,
 					min: 0.1,
 					required: true,
 				},
@@ -3761,28 +3879,33 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
+				let zone = options.zone.toString()
 				let gain = options.gain
 
-				let currentGain = self.DATA?.reverbInput[matrixInput].gain
+				let currentGain = self.DATA?.reverbInput?.[matrixInput]?.[zone]?.gain
+				if (currentGain === null || currentGain === undefined) currentGain = 0
 
-				if (currentGain !== undefined) {
-					let newGain = currentGain + gain
+				let newGain = currentGain + gain
+				if (newGain > 24.0) newGain = 24.0
 
-					let args = [
-						{
-							type: 'f',
-							value: newGain,
-						},
-					]
+				let args = [
+					{
+						type: 'f',
+						value: newGain,
+					},
+				]
 
-					self.sendCommand('/reverbinput/gain/' + matrixInput, args)
+				self.sendCommand('/reverbinput/gain/' + matrixInput + '/' + zone, args)
+				if (self.DATA?.reverbInput?.[matrixInput]?.[zone]) {
+					self.DATA.reverbInput[matrixInput][zone].gain = newGain
 				}
+				self.checkFeedbacks('reverbInputGain')
 			},
 		}
 
 		actions.decreaseReverbInputGain = {
-			name: 'Reverb Input - Decrease Gain',
-			description: 'Decrease the Gain of a Reverb Input',
+			name: 'Reverb Input - Decrease Gain (En-Space Input Matrix)',
+			description: 'Decrease En-Space input matrix gain for one input/zone',
 			options: [
 				{
 					type: 'number',
@@ -3790,14 +3913,23 @@ export default {
 					id: 'matrixinput',
 					default: 1,
 					min: 1,
-     max: self.matrixInputCount,
+					max: self.matrixInputCount,
+					required: true,
+				},
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
 					required: true,
 				},
 				{
 					type: 'number',
 					label: 'Gain Decrease Amount',
 					id: 'gain',
-					default: 0.1,
+					default: 0.5,
 					min: 0.1,
 					required: true,
 				},
@@ -3805,22 +3937,27 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
+				let zone = options.zone.toString()
 				let gain = options.gain
 
-				let currentGain = self.DATA?.reverbInput[matrixInput].gain
+				let currentGain = self.DATA?.reverbInput?.[matrixInput]?.[zone]?.gain
+				if (currentGain === null || currentGain === undefined) currentGain = 0
 
-				if (currentGain !== undefined) {
-					let newGain = currentGain - gain
+				let newGain = currentGain - gain
+				if (newGain < -120.0) newGain = -120.0
 
-					let args = [
-						{
-							type: 'f',
-							value: newGain,
-						},
-					]
+				let args = [
+					{
+						type: 'f',
+						value: newGain,
+					},
+				]
 
-					self.sendCommand('/reverbinput/gain/' + matrixInput, args)
+				self.sendCommand('/reverbinput/gain/' + matrixInput + '/' + zone, args)
+				if (self.DATA?.reverbInput?.[matrixInput]?.[zone]) {
+					self.DATA.reverbInput[matrixInput][zone].gain = newGain
 				}
+				self.checkFeedbacks('reverbInputGain')
 			},
 		}
 
@@ -4967,7 +5104,258 @@ export default {
 			},
 		}
 
+		// ========== Spezial Presets: En-Space Input Bank ==========
+		actions.increaseSpecialEnSpaceInput = {
+			name: 'Special En-Space - Increase Selected Matrix Input',
+			description: 'Select the next Matrix Input for the Spezial En-Space Input Bank',
+			options: [],
+			callback: async function () {
+				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() + 1)
+			},
+		}
+
+		actions.decreaseSpecialEnSpaceInput = {
+			name: 'Special En-Space - Decrease Selected Matrix Input',
+			description: 'Select the previous Matrix Input for the Spezial En-Space Input Bank',
+			options: [],
+			callback: async function () {
+				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() - 1)
+			},
+		}
+
+		actions.increaseSpecialEnSpaceSendGain = {
+			name: 'Special En-Space - Increase Send Gain',
+			description: 'Increase En-Space send gain of the selected Matrix Input (/matrixinput/reverbsendgain)',
+			options: [
+				{
+					type: 'number',
+					label: 'Reverb Send Gain Increase Amount',
+					id: 'reverbsendgain',
+					default: 0.5,
+					min: 0.1,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				const matrixInput = self.getSpecialEnSpaceInput()
+				const step = Number(action.options.reverbsendgain) || 0.5
+				let current = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
+				if (current === null || current === undefined) current = 0
+				let next = current + step
+				if (next > 24.0) next = 24.0
+				self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, [{ type: 'f', value: next }])
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].reverbSendGain = next
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain', 'specialEnSpaceSendGain')
+			},
+		}
+
+		actions.decreaseSpecialEnSpaceSendGain = {
+			name: 'Special En-Space - Decrease Send Gain',
+			description: 'Decrease En-Space send gain of the selected Matrix Input (/matrixinput/reverbsendgain)',
+			options: [
+				{
+					type: 'number',
+					label: 'Reverb Send Gain Decrease Amount',
+					id: 'reverbsendgain',
+					default: 0.5,
+					min: 0.1,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				const matrixInput = self.getSpecialEnSpaceInput()
+				const step = Number(action.options.reverbsendgain) || 0.5
+				let current = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
+				if (current === null || current === undefined) current = 0
+				let next = current - step
+				if (next < -120.0) next = -120.0
+				self.sendCommand('/matrixinput/reverbsendgain/' + matrixInput, [{ type: 'f', value: next }])
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].reverbSendGain = next
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain', 'specialEnSpaceSendGain')
+			},
+		}
+
+		actions.setSpecialEnSpaceZoneGain = {
+			name: 'Special En-Space - Set Zone Gain',
+			description:
+				'Set En-Space zone gain for the selected Matrix Input. Setting a zone to 0 forces all other zones to -120.',
+			options: [
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
+					required: true,
+				},
+				{
+					type: 'number',
+					label: 'Gain (dB)',
+					id: 'gain',
+					default: -120,
+					min: -120.0,
+					max: 24.0,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				const matrixInput = self.getSpecialEnSpaceInput()
+				const zone = Number(action.options.zone) || 1
+				const gain = Number(action.options.gain)
+				self.applySpecialEnSpaceZoneGain(matrixInput, zone, gain)
+			},
+		}
+
+		actions.toggleSpecialEnSpaceZoneGain = {
+			name: 'Special En-Space - Toggle Zone Gain (-120 / 0)',
+			description:
+				'Toggle zone between -120 and 0 for the selected Matrix Input. Turning a zone on (0) sets all other zones to -120.',
+			options: [
+				{
+					type: 'number',
+					label: 'En-Space Zone',
+					id: 'zone',
+					default: 1,
+					min: 1,
+					max: 4,
+					required: true,
+				},
+			],
+			callback: async function (action) {
+				const matrixInput = self.getSpecialEnSpaceInput()
+				const zone = Number(action.options.zone) || 1
+				const current = self.DATA?.reverbInput?.[matrixInput]?.[zone]?.gain
+				const isOn = current !== null && current !== undefined && Number(current) > -60
+				self.applySpecialEnSpaceZoneGain(matrixInput, zone, isOn ? -120 : 0)
+			},
+		}
+
+		actions.setSpecialEnSpaceAllZonesOff = {
+			name: 'Special En-Space - All Zones All Inputs -120',
+			description: 'Set En-Space zone gain to -120 for every Matrix Input and all zones 1–4',
+			options: [],
+			callback: async function () {
+				self.sendCommand('/reverbinput/gain/*/*', [{ type: 'f', value: -120 }])
+				if (self.DATA?.reverbInput) {
+					for (let i = 1; i < self.DATA.reverbInput.length; i++) {
+						for (let z = 1; z <= 4; z++) {
+							if (self.DATA.reverbInput[i]?.[z]) {
+								self.DATA.reverbInput[i][z].gain = -120
+							}
+						}
+					}
+				}
+				self.checkFeedbacks('reverbInputGain', 'specialEnSpaceZoneGain')
+			},
+		}
+
+		actions.setSpecialEnSpaceSendGainAllOff = {
+			name: 'Special En-Space - All Inputs Send Gain -120',
+			description: 'Set En-Space send gain (/matrixinput/reverbsendgain) to -120 for all Matrix Inputs',
+			options: [],
+			callback: async function () {
+				self.sendCommand('/matrixinput/reverbsendgain/*', [{ type: 'f', value: -120 }])
+				if (self.DATA?.matrixInput) {
+					for (let i = 1; i < self.DATA.matrixInput.length; i++) {
+						if (self.DATA.matrixInput[i]) {
+							self.DATA.matrixInput[i].reverbSendGain = -120
+						}
+					}
+				}
+				self.checkFeedbacks('matrixInputReverbSendGain', 'specialEnSpaceSendGain')
+			},
+		}
+
+		actions.refreshSpecialEnSpaceSendGain = {
+			name: 'Special En-Space - Refresh Send Gain Display',
+			description: 'Query En-Space send gain for the currently selected Matrix Input',
+			options: [],
+			callback: async function () {
+				const matrixInput = self.getSpecialEnSpaceInput()
+				self.sendCommand(`/matrixinput/reverbsendgain/${matrixInput}`, [])
+				self.checkFeedbacks('specialEnSpaceSendGain')
+			},
+		}
+
+		actions.refreshSpecialEnSpaceInputName = {
+			name: 'Special En-Space - Refresh Input Name Display',
+			description: 'Query channel name for the currently selected Matrix Input',
+			options: [],
+			callback: async function () {
+				const matrixInput = self.getSpecialEnSpaceInput()
+				self.sendCommand(`/matrixinput/channelname/${matrixInput}`, [])
+				self.checkFeedbacks('specialEnSpaceInputName')
+			},
+		}
+
 		self.attachPollSubscriptions(actions)
 		self.setActionDefinitions(actions)
+	},
+
+	getSpecialEnSpaceInput() {
+		const self = this
+		const max = Math.max(1, Number(self.matrixInputCount) || 1)
+		let n = Number(self.DATA?.specialEnSpaceInput)
+		if (!Number.isFinite(n) || n < 1) n = 1
+		if (n > max) n = max
+		return n
+	},
+
+	setSpecialEnSpaceInput(next) {
+		const self = this
+		const max = Math.max(1, Number(self.matrixInputCount) || 1)
+		let n = Number(next)
+		if (!Number.isFinite(n)) n = 1
+		while (n < 1) n += max
+		while (n > max) n -= max
+		if (!self.DATA) self.DATA = {}
+		self.DATA.specialEnSpaceInput = n
+		self.setVariableValues({ special_enspace_input: n })
+		// Refresh values for the newly selected input so display feedback updates immediately
+		if (self.oscReady) {
+			self.sendCommand(`/matrixinput/reverbsendgain/${n}`, [])
+			self.sendCommand(`/matrixinput/channelname/${n}`, [])
+			for (let z = 1; z <= 4; z++) {
+				self.sendCommand(`/reverbinput/gain/${n}/${z}`, [])
+			}
+		}
+		self.checkFeedbacks(
+			'specialEnSpaceInput',
+			'specialEnSpaceSendGain',
+			'specialEnSpaceInputName',
+			'specialEnSpaceZoneGain'
+		)
+	},
+
+	/**
+	 * Set one zone gain; when turning a zone on (gain > -60), force other zones to -120.
+	 */
+	applySpecialEnSpaceZoneGain(matrixInput, zone, gain) {
+		const self = this
+		const z = Math.min(4, Math.max(1, Number(zone) || 1))
+		const g = Number(gain)
+		const turnOn = Number.isFinite(g) && g > -60
+
+		const sendZone = (targetZone, value) => {
+			self.sendCommand(`/reverbinput/gain/${matrixInput}/${targetZone}`, [{ type: 'f', value }])
+			if (self.DATA?.reverbInput?.[matrixInput]?.[targetZone]) {
+				self.DATA.reverbInput[matrixInput][targetZone].gain = value
+			}
+		}
+
+		if (turnOn) {
+			for (let other = 1; other <= 4; other++) {
+				sendZone(other, other === z ? g : -120)
+			}
+		} else {
+			sendZone(z, Number.isFinite(g) ? g : -120)
+		}
+
+		self.checkFeedbacks('reverbInputGain', 'specialEnSpaceZoneGain')
 	},
 }

@@ -5,7 +5,7 @@
 	"name": "d&b audiotechnik Soundscape Processors",
 	"shortname": "Soundscape Proc.",
 	"description": "[BETA] d&b audiotechnik Soundscape Processors: DS110; DS100; DS100M",
-	"version": "2.0.0-beta.15.4",
+	"version": "2.0.0-beta.15.22",
 	"license": "MIT",
 	"repository": "git+https://github.com/sergeXYZ/companion-module-soundscape-processors.git",
 	"bugs": "https://github.com/sergeXYZ/companion-module-soundscape-processors/issues",

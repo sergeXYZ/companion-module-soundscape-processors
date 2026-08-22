@@ -34,9 +34,51 @@ export const COLORS = {
 		bgcolor: combineRgb(150, 155, 0),
 		color: combineRgb(0, 0, 0),
 	},
+	/** Value-display buttons (Gain, Delay, Spread, …) */
+	display: {
+		bgcolor: combineRgb(0, 0, 0),
+		color: combineRgb(255, 255, 255),
+	},
+	/** Stream Deck rotary / encoder presets (no display feedback) */
+	rotary: {
+		bgcolor: combineRgb(0xff, 0xc0, 0xff),
+		color: combineRgb(0, 0, 0),
+	},
+	/** Spezial Presets En-Space zone latch (text always green) */
+	specialTextGreen: combineRgb(0, 255, 0),
+	specialZoneOff: {
+		bgcolor: combineRgb(0, 0, 0),
+		color: combineRgb(0, 255, 0),
+	},
+	specialZone1On: {
+		bgcolor: combineRgb(0, 0, 255),
+		color: combineRgb(0, 255, 0),
+	},
+	specialZone2On: {
+		bgcolor: combineRgb(255, 255, 255),
+		color: combineRgb(0, 255, 0),
+	},
+	specialZone3On: {
+		bgcolor: combineRgb(255, 0, 0),
+		color: combineRgb(0, 255, 0),
+	},
+	specialZone4On: {
+		bgcolor: combineRgb(0, 100, 0),
+		color: combineRgb(0, 255, 0),
+	},
 }
 
 export const buttonBaseStyle = {
 	size: '14',
 	...COLORS.grey,
+}
+
+export const displayButtonStyle = {
+	size: '14',
+	...COLORS.display,
+}
+
+export const rotaryButtonStyle = {
+	size: '14',
+	...COLORS.rotary,
 }

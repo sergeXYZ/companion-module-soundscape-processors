@@ -95,6 +95,11 @@ class dbaudiotechnikDspInstance extends InstanceBase {
 		this.initFeedbacks()
 		this.initVariables()
 		this.initPresets()
+		// Count updates rebuild DATA arrays; re-query so En-Space / scene / etc. refill immediately
+		if (this.oscReady) {
+			this.getSubscribedData('continuous')
+			this.getSubscribedData('discrete')
+		}
 	}
 }
 

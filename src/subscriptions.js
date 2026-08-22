@@ -40,6 +40,9 @@ const PATH_BUILDERS = {
 	setMatrixInputReverbSendGain: (o) => PATH_BUILDERS.matrixInputReverbSendGain(o),
 	increaseMatrixInputReverbSendGain: (o) => PATH_BUILDERS.matrixInputReverbSendGain(o),
 	decreaseMatrixInputReverbSendGain: (o) => PATH_BUILDERS.matrixInputReverbSendGain(o),
+	setMatrixInputReverbSendGainAll: () => ['/matrixinput/reverbsendgain/*'],
+	increaseMatrixInputReverbSendGainAll: () => ['/matrixinput/reverbsendgain/*'],
+	decreaseMatrixInputReverbSendGainAll: () => ['/matrixinput/reverbsendgain/*'],
 
 	// Matrix Node
 	matrixNodeEnable: (o) => [
@@ -156,11 +159,32 @@ const PATH_BUILDERS = {
 	increaseMatrixSettingsReverbRearLevel: () => PATH_BUILDERS.matrixSettingsReverbRearLevel(),
 	decreaseMatrixSettingsReverbRearLevel: () => PATH_BUILDERS.matrixSettingsReverbRearLevel(),
 
-	// Reverb input
-	reverbInputGain: (o) => [`/reverbinput/gain/${optionNumber(o, 'matrixinput')}`],
+	// Reverb input matrix (input × zone 1–4)
+	reverbInputGain: (o) => [
+		`/reverbinput/gain/${optionNumber(o, 'matrixinput')}/${optionNumber(o, 'zone', 1)}`,
+	],
 	setReverbInputGain: (o) => PATH_BUILDERS.reverbInputGain(o),
 	increaseReverbInputGain: (o) => PATH_BUILDERS.reverbInputGain(o),
 	decreaseReverbInputGain: (o) => PATH_BUILDERS.reverbInputGain(o),
+	setReverbInputGainAll: () => ['/reverbinput/gain/*/*'],
+
+	// Spezial Presets En-Space Input Bank (selected input is module state — poll wildcards)
+	specialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],
+	increaseSpecialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],
+	decreaseSpecialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],
+	setSpecialEnSpaceSendGainAllOff: () => ['/matrixinput/reverbsendgain/*'],
+	refreshSpecialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],
+	specialEnSpaceInputName: () => ['/matrixinput/channelname/*'],
+	refreshSpecialEnSpaceInputName: () => ['/matrixinput/channelname/*'],
+	specialEnSpaceZoneGain: (o) => [`/reverbinput/gain/*/${optionNumber(o, 'zone', 1)}`],
+	setSpecialEnSpaceZoneGain: (o) => [`/reverbinput/gain/*/${optionNumber(o, 'zone', 1)}`],
+	toggleSpecialEnSpaceZoneGain: () => [
+		'/reverbinput/gain/*/1',
+		'/reverbinput/gain/*/2',
+		'/reverbinput/gain/*/3',
+		'/reverbinput/gain/*/4',
+	],
+	setSpecialEnSpaceAllZonesOff: () => ['/reverbinput/gain/*/*'],
 
 	reverbInputProcessingMute: (o) => [`/reverbinputprocessing/mute/${optionNumber(o, 'matrixinput')}`],
 	reverbInputProcessingGain: (o) => [`/reverbinputprocessing/gain/${optionNumber(o, 'matrixinput')}`],
@@ -220,6 +244,7 @@ const CORE_STATUS_PATHS = [
 	'/settings/devicename',
 	'/status/statustext',
 	'/status/audionetworksamplestatus',
+	'/matrixsettings/reverbroomid',
 ]
 
 /**

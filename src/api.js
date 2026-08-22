@@ -109,6 +109,12 @@ export default {
 	buildDefaultValues() {
 		let self = this
 
+		const previousSpecialInput = Number(self.DATA?.specialEnSpaceInput)
+		const specialEnSpaceInput =
+			Number.isFinite(previousSpecialInput) && previousSpecialInput >= 1
+				? Math.min(previousSpecialInput, self.matrixInputCount || 1)
+				: 1
+
 		self.DATA = {
 			// General error and status data
 			generalError: null,
@@ -116,6 +122,9 @@ export default {
 			deviceName: '',
 			statusText: '',
 			audioNetworkSampleStatus: null,
+
+			/** Spezial Presets: shared Matrix Input for En-Space Input Bank */
+			specialEnSpaceInput,
 
 				// Matrix input data
 			matrixInput: Array.from({ length: self.matrixInputCount + 1 }, () => ({
@@ -173,8 +182,10 @@ export default {
 				v: null,
 			})),
 
-				// Reverb input data (En-Space send gain per zone)
-			reverbInput: Array.from({ length: self.matrixInputCount + 1 }, () => ({ gain: null })),
+			// Reverb input matrix (En-Space): input × zone (1–4)
+			reverbInput: Array.from({ length: self.matrixInputCount + 1 }, () =>
+				Array.from({ length: 5 }, () => ({ gain: null }))
+			),
 
 			// Reverb input processing data
 			reverbInputProcessing: Array.from({ length: self.matrixInputCount + 1 }, () => ({
@@ -407,7 +418,7 @@ export default {
 
 		self.sendCommand('/matrixinput/reverbsendgain/*', [])
 
-		self.sendCommand('/reverbinput/gain/*', [])
+		self.sendCommand('/reverbinput/gain/*/*', [])
 
 		self.sendCommand('/reverbinputprocessing/mute/*', [])
 		self.sendCommand('/reverbinputprocessing/gain/*', [])
@@ -549,6 +560,14 @@ export default {
 				self.DATA.matrixInput[id].mute = value
 				let valueFriendly = value === 1 ? 'On' : 'Off'
 				variableObj = { [`matrixinput${id}_mute`]: valueFriendly }
+			} else if (address.indexOf('/matrixinput/reverbsendgain/') !== -1) {
+				// Must be before /matrixinput/gain/ (longer path first)
+				let id = address.split('/')[4].toString()
+				if (self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].reverbSendGain = value
+				}
+				const gainDisplay = typeof value === 'number' && Number.isFinite(value) ? value.toFixed(2) : value
+				variableObj = { [`matrixinput${id}_reverb_send_gain`]: gainDisplay }
 			} else if (address.indexOf('/matrixinput/gain/') !== -1) {
 				let id = address.split('/')[4].toString()
 				self.DATA.matrixInput[id].gain = value
@@ -777,13 +796,17 @@ export default {
 					[`coordinatemapping_source_position_${id}_${id2}_y`]: value1,
 				}
 			} else if (address.indexOf('/matrixsettings/reverbroomid') !== -1) {
-				self.DATA.matrixSettings.reverbRoomId = value
+				const roomId = Number(value)
+				self.DATA.matrixSettings.reverbRoomId = Number.isFinite(roomId) ? roomId : value
 
-				//find it in choices_reverb_rooms
 				let valueFriendly = ''
-				let reverbRoomObj = self.CHOICES_REVERB_ROOMS.find((item) => item.id === value)
+				let reverbRoomObj = self.CHOICES_REVERB_ROOMS.find(
+					(item) => Number(item.id) === Number(self.DATA.matrixSettings.reverbRoomId)
+				)
 				if (reverbRoomObj) {
 					valueFriendly = reverbRoomObj.label
+				} else if (self.DATA.matrixSettings.reverbRoomId !== null && self.DATA.matrixSettings.reverbRoomId !== undefined) {
+					valueFriendly = String(self.DATA.matrixSettings.reverbRoomId)
 				}
 				variableObj = { matrixsettings_reverb_room_id: valueFriendly }
 			} else if (address.indexOf('/matrixsettings/reverbpredelayfactor') !== -1) {
@@ -792,15 +815,14 @@ export default {
 			} else if (address.indexOf('/matrixsettings/reverbrearlevel') !== -1) {
 				self.DATA.matrixSettings.reverbRearLevel = value
 				variableObj = { matrixsettings_reverb_rear_level: value }
-			} else if (address.indexOf('/matrixinput/reverbsendgain/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixInput[id].reverbSendGain = value
-				variableObj = { [`matrixinput${id}_reverb_send_gain`]: value }
 			} else if (address.indexOf('/reverbinput/gain/') !== -1) {
 				let id = address.split('/')[4].toString()
-				let id2 = address.split('/')[5].toString()
-				self.DATA.reverbInput[id].gain = value
-				variableObj = { [`reverbinput_gain_${id}_zone${id2}`]: value }
+				let id2 = address.split('/')[5]?.toString()
+				if (id2 && self.DATA.reverbInput?.[id]?.[id2]) {
+					self.DATA.reverbInput[id][id2].gain = value
+				}
+				const gainDisplay = typeof value === 'number' && Number.isFinite(value) ? value.toFixed(2) : value
+				variableObj = { [`reverbinput_gain_${id}_zone${id2}`]: gainDisplay }
 			} else if (address.indexOf('/reverbinputprocessing/mute/') !== -1) {
 				let id = address.split('/')[4].toString()
 				self.DATA.reverbInputProcessing[id].mute = value
@@ -936,6 +958,8 @@ export default {
 				self.checkFeedbacks('matrixInputEQEnable')
 			} else if (address.indexOf('/matrixinput/polarity/') !== -1) {
 				self.checkFeedbacks('matrixInputPolarity')
+			} else if (address.indexOf('/matrixinput/channelname/') !== -1) {
+				self.checkFeedbacks('matrixInputChannelName', 'specialEnSpaceInputName')
 			} else if (address.indexOf('/matrixoutput/gain/') !== -1) {
 				self.checkFeedbacks('matrixOutputGain')
 			} else if (address.indexOf('/matrixoutput/mute/') !== -1) {
@@ -954,6 +978,16 @@ export default {
 				self.checkFeedbacks('matrixNodeDelayEnable')
 			} else if (address.indexOf('/scene/') !== -1) {
 				self.checkFeedbacks('sceneIndex')
+			} else if (address.indexOf('/matrixsettings/reverbroomid') !== -1) {
+				self.checkFeedbacks('matrixSettingsReverbRoomId')
+			} else if (address.indexOf('/matrixsettings/reverbpredelayfactor') !== -1) {
+				self.checkFeedbacks('matrixSettingsReverbPreDelayFactor')
+			} else if (address.indexOf('/matrixsettings/reverbrearlevel') !== -1) {
+				self.checkFeedbacks('matrixSettingsReverbRearLevel')
+			} else if (address.indexOf('/matrixinput/reverbsendgain/') !== -1) {
+				self.checkFeedbacks('matrixInputReverbSendGain', 'specialEnSpaceSendGain')
+			} else if (address.indexOf('/reverbinput/gain/') !== -1) {
+				self.checkFeedbacks('reverbInputGain', 'specialEnSpaceZoneGain')
 			} else {
 				self.scheduleFeedbackCheck()
 			}
