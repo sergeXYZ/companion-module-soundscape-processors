@@ -1418,6 +1418,21 @@ export default {
 			steps: [{ down: [{ actionId: 'increaseSpecialEnSpaceInput', options: {} }], up: [] }],
 			feedbacks: [{ feedbackId: 'specialEnSpaceInput', options: { suffix: '+' } }],
 		}
+		presets.special_enspace_input_rotary = {
+			type: 'simple',
+			name: 'Special En-Space - Matrix Input Rotary (↻ inc / ↺ dec)',
+			keywords: ['special', 'enspace', 'matrixinput', 'rotary', 'encoder'],
+			style: { ...rotaryButtonStyle, text: 'Input' },
+			steps: [
+				{
+					down: [],
+					up: [],
+					rotate_left: [{ actionId: 'decreaseSpecialEnSpaceInput', options: {} }],
+					rotate_right: [{ actionId: 'increaseSpecialEnSpaceInput', options: {} }],
+				},
+			],
+			feedbacks: [],
+		}
 		presets.special_enspace_input_name_display = {
 			type: 'simple',
 			name: 'Special En-Space - Display Input Name',
@@ -1549,7 +1564,7 @@ export default {
 
 		pushSection({
 			id: 'special-presets',
-			name: 'Spezial Presets',
+			name: 'Special Presets',
 			description:
 				'En-Space Input Bank: shared Matrix Input selector, Send Gain ±, Zone 1–4 toggle (-120 default / 0). Only one zone can be 0 at a time (others go to -120). Colours: off=black, Z1=blue, Z2=white, Z3=red, Z4=dark green; text always green.',
 			definitions: [
@@ -1560,6 +1575,7 @@ export default {
 					presets: [
 						'special_enspace_input_dec',
 						'special_enspace_input_inc',
+						'special_enspace_input_rotary',
 						'special_enspace_input_name_display',
 					],
 				},

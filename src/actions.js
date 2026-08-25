@@ -5104,10 +5104,10 @@ export default {
 			},
 		}
 
-		// ========== Spezial Presets: En-Space Input Bank ==========
+		// ========== Special Presets: En-Space Input Bank ==========
 		actions.increaseSpecialEnSpaceInput = {
 			name: 'Special En-Space - Increase Selected Matrix Input',
-			description: 'Select the next Matrix Input for the Spezial En-Space Input Bank',
+			description: 'Select the next Matrix Input for the Special En-Space Input Bank',
 			options: [],
 			callback: async function () {
 				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() + 1)
@@ -5116,7 +5116,7 @@ export default {
 
 		actions.decreaseSpecialEnSpaceInput = {
 			name: 'Special En-Space - Decrease Selected Matrix Input',
-			description: 'Select the previous Matrix Input for the Spezial En-Space Input Bank',
+			description: 'Select the previous Matrix Input for the Special En-Space Input Bank',
 			options: [],
 			callback: async function () {
 				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() - 1)

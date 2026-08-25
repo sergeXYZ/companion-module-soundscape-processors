@@ -36,7 +36,8 @@ Install the built package into Companion's modules folder (or use a local module
 
 ## Version history
 
-- **2.0.0-beta.15.22** — Spezial Presets: Display Input Name (polled channelname)
+- **2.0.0-beta.15.23** — Rename section to Special Presets; Input Select rotary
+- **2.0.0-beta.15.22** — Special Presets: Display Input Name (polled channelname)
 - **2.0.0-beta.15.21** — Spezial Send Display: line1 In N, line2 value dB only
 - **2.0.0-beta.15.20** — Fix Spezial Send Display feedback; rename All In EnSp -120
 - **2.0.0-beta.15.19** — Spezial Send: Display + Rotary; Inc/Dec without feedback; All Inputs Send -120

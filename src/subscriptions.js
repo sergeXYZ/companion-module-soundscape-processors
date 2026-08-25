@@ -168,7 +168,7 @@ const PATH_BUILDERS = {
 	decreaseReverbInputGain: (o) => PATH_BUILDERS.reverbInputGain(o),
 	setReverbInputGainAll: () => ['/reverbinput/gain/*/*'],
 
-	// Spezial Presets En-Space Input Bank (selected input is module state — poll wildcards)
+	// Special Presets En-Space Input Bank (selected input is module state — poll wildcards)
 	specialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],
 	increaseSpecialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],
 	decreaseSpecialEnSpaceSendGain: () => ['/matrixinput/reverbsendgain/*'],

@@ -44,7 +44,7 @@ export const COLORS = {
 		bgcolor: combineRgb(0xff, 0xc0, 0xff),
 		color: combineRgb(0, 0, 0),
 	},
-	/** Spezial Presets En-Space zone latch (text always green) */
+	/** Special Presets En-Space zone latch (text always green) */
 	specialTextGreen: combineRgb(0, 255, 0),
 	specialZoneOff: {
 		bgcolor: combineRgb(0, 0, 0),

@@ -1188,7 +1188,7 @@ export default {
 			type: 'advanced',
 			affectedProperties: ['text', 'color', 'size', 'bgcolor'],
 			name: 'Special En-Space - Selected Matrix Input',
-			description: 'Show the Matrix Input selected for the Spezial En-Space Input Bank',
+			description: 'Show the Matrix Input selected for the Special En-Space Input Bank',
 			options: [
 				{
 					type: 'textinput',

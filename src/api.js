@@ -123,7 +123,7 @@ export default {
 			statusText: '',
 			audioNetworkSampleStatus: null,
 
-			/** Spezial Presets: shared Matrix Input for En-Space Input Bank */
+			/** Special Presets: shared Matrix Input for En-Space Input Bank */
 			specialEnSpaceInput,
 
 				// Matrix input data
