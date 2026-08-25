@@ -126,6 +126,9 @@ export default {
 			/** Special Presets: shared Matrix Input for En-Space Input Bank */
 			specialEnSpaceInput,
 
+			/** Stream Deck encoder held — rotary Inc/Dec use coarse step sizes */
+			rotaryEncoderPressed: false,
+
 				// Matrix input data
 			matrixInput: Array.from({ length: self.matrixInputCount + 1 }, () => ({
 				mute: null,

@@ -196,7 +196,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.matrixInput[matrixInput].gain
 
@@ -245,7 +245,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.matrixInput[matrixInput].gain
 
@@ -362,7 +362,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.matrixInput[matrixInput].delay
 
@@ -411,7 +411,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.matrixInput[matrixInput].delay
 
@@ -844,7 +844,7 @@ export default {
 				let input = options.input.toString()
 				let output = options.output.toString()
 				let matrixNode = options.input + '/' + options.output
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.matrixNode[input][output].gain
 
@@ -904,7 +904,7 @@ export default {
 				let input = options.input.toString()
 				let output = options.output.toString()
 				let matrixNode = options.input + '/' + options.output
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.matrixNode[input][output].gain
 
@@ -1120,7 +1120,7 @@ export default {
 				let input = options.input.toString()
 				let output = options.output.toString()
 				let matrixNode = options.input + '/' + options.output
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.matrixNode[input][output].delay
 
@@ -1180,7 +1180,7 @@ export default {
 				let input = options.input.toString()
 				let output = options.output.toString()
 				let matrixNode = options.input + '/' + options.output
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.matrixNode[input][output].delay
 
@@ -1367,7 +1367,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.matrixOutput[matrixOutput].gain
 
@@ -1416,7 +1416,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.matrixOutput[matrixOutput].gain
 
@@ -1533,7 +1533,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput.toString()
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.matrixOutput[matrixOutput].delay
 
@@ -1582,7 +1582,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput.toString()
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.matrixOutput[matrixOutput].delay
 
@@ -2249,7 +2249,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let soundObject = options.soundobject.toString()
-				let sourceSpread = options.sourcespread
+				let sourceSpread = self.resolveRotaryStep(Number(options.sourcespread) || 0.1, 1.0)
 
 				let currentSourceSpread = self.DATA?.soundObject[soundObject].sourceSpread
 
@@ -2298,7 +2298,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let soundObject = options.soundobject.toString()
-				let sourceSpread = options.sourcespread
+				let sourceSpread = self.resolveRotaryStep(Number(options.sourcespread) || 0.1, 1.0)
 
 				let currentSourceSpread = self.DATA?.soundObject[soundObject].sourceSpread
 
@@ -2628,7 +2628,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let soundObject = options.soundobject.toString()
-				let sourcePositionX = options.sourceposition
+				let sourcePositionX = self.resolveRotaryStep(Number(options.sourceposition) || 0.1, 1.0)
 
 				let currentSourcePositionX = self.DATA?.positioning[id].sourcePositionX
 
@@ -2672,7 +2672,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let soundObject = options.soundobject.toString()
-				let sourcePositionX = options.sourceposition
+				let sourcePositionX = self.resolveRotaryStep(Number(options.sourceposition) || 0.1, 1.0)
 
 				let currentSourcePositionX = self.DATA?.positioning[id].sourcePositionX
 
@@ -2752,7 +2752,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let soundObject = options.soundobject.toString()
-				let sourcePositionY = options.sourceposition
+				let sourcePositionY = self.resolveRotaryStep(Number(options.sourceposition) || 0.1, 1.0)
 
 				let currentSourcePositionY = self.DATA?.positioning[id].sourcePositionY
 
@@ -2796,7 +2796,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let soundObject = options.soundobject.toString()
-				let sourcePositionY = options.sourceposition
+				let sourcePositionY = self.resolveRotaryStep(Number(options.sourceposition) || 0.1, 1.0)
 
 				let currentSourcePositionY = self.DATA?.positioning[id].sourcePositionY
 
@@ -3622,7 +3622,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let reverbSendGain = options.reverbsendgain
+				let reverbSendGain = self.resolveRotaryStep(Number(options.reverbsendgain) || 0.5, 6.0)
 
 				let currentReverbSendGain = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
 				if (currentReverbSendGain === null || currentReverbSendGain === undefined) currentReverbSendGain = 0
@@ -3670,7 +3670,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let reverbSendGain = options.reverbsendgain
+				let reverbSendGain = self.resolveRotaryStep(Number(options.reverbsendgain) || 0.5, 6.0)
 
 				let currentReverbSendGain = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
 				if (currentReverbSendGain === null || currentReverbSendGain === undefined) currentReverbSendGain = 0
@@ -3707,7 +3707,7 @@ export default {
 				},
 			],
 			callback: async function (action) {
-				const step = Number(action.options.reverbsendgain) || 0.5
+				const step = self.resolveRotaryStep(Number(action.options.reverbsendgain) || 0.5, 6.0)
 				const count = self.matrixInputCount || self.DATA?.matrixInput?.length - 1 || 0
 				for (let i = 1; i <= count; i++) {
 					let current = self.DATA?.matrixInput?.[i]?.reverbSendGain
@@ -3737,7 +3737,7 @@ export default {
 				},
 			],
 			callback: async function (action) {
-				const step = Number(action.options.reverbsendgain) || 0.5
+				const step = self.resolveRotaryStep(Number(action.options.reverbsendgain) || 0.5, 6.0)
 				const count = self.matrixInputCount || self.DATA?.matrixInput?.length - 1 || 0
 				for (let i = 1; i <= count; i++) {
 					let current = self.DATA?.matrixInput?.[i]?.reverbSendGain
@@ -3880,7 +3880,7 @@ export default {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
 				let zone = options.zone.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.reverbInput?.[matrixInput]?.[zone]?.gain
 				if (currentGain === null || currentGain === undefined) currentGain = 0
@@ -3938,7 +3938,7 @@ export default {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
 				let zone = options.zone.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.reverbInput?.[matrixInput]?.[zone]?.gain
 				if (currentGain === null || currentGain === undefined) currentGain = 0
@@ -4124,7 +4124,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.reverbInputProcessing[matrixInput].gain
 
@@ -4168,7 +4168,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.reverbInputProcessing[matrixInput].gain
 
@@ -4757,7 +4757,7 @@ export default {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
 				let soundObject = options.soundobject.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.soundObjectRouting?.[functionGroup]?.[soundObject]?.gain
 				if (currentGain === null || currentGain === undefined) {
@@ -4813,7 +4813,7 @@ export default {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
 				let soundObject = options.soundobject.toString()
-				let gain = options.gain
+				let gain = self.resolveRotaryStep(Number(options.gain) || 0.5, 6.0)
 
 				let currentGain = self.DATA?.soundObjectRouting?.[functionGroup]?.[soundObject]?.gain
 				if (currentGain === null || currentGain === undefined) {
@@ -4898,7 +4898,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
-				let spreadFactor = options.spreadfactor
+				let spreadFactor = self.resolveRotaryStep(Number(options.spreadfactor) || 0.1, 1.0)
 
 				let currentSpreadFactor = self.DATA?.functionGroup[functionGroup].spreadFactor
 
@@ -4946,7 +4946,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
-				let spreadFactor = options.spreadfactor
+				let spreadFactor = self.resolveRotaryStep(Number(options.spreadfactor) || 0.1, 1.0)
 
 				let currentSpreadFactor = self.DATA?.functionGroup[functionGroup].spreadFactor
 
@@ -5033,7 +5033,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.functionGroup[functionGroup].delay
 
@@ -5081,7 +5081,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
-				let delay = options.delay
+				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
 
 				let currentDelay = self.DATA?.functionGroup[functionGroup].delay
 
@@ -5104,13 +5104,36 @@ export default {
 			},
 		}
 
+
+		// ========== Rotary encoder press (coarse step while held) ==========
+		actions.pressRotaryEncoder = {
+			name: 'Rotary Encoder - Press (coarse step)',
+			description: 'Hold encoder: subsequent Inc/Dec use coarse step sizes',
+			options: [],
+			callback: async function () {
+				if (!self.DATA) self.DATA = {}
+				self.DATA.rotaryEncoderPressed = true
+			},
+		}
+
+		actions.releaseRotaryEncoder = {
+			name: 'Rotary Encoder - Release (fine step)',
+			description: 'Release encoder: subsequent Inc/Dec use fine step sizes',
+			options: [],
+			callback: async function () {
+				if (!self.DATA) self.DATA = {}
+				self.DATA.rotaryEncoderPressed = false
+			},
+		}
+
 		// ========== Special Presets: En-Space Input Bank ==========
 		actions.increaseSpecialEnSpaceInput = {
 			name: 'Special En-Space - Increase Selected Matrix Input',
 			description: 'Select the next Matrix Input for the Special En-Space Input Bank',
 			options: [],
 			callback: async function () {
-				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() + 1)
+				const step = self.resolveRotaryStep(1, 10)
+				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() + step)
 			},
 		}
 
@@ -5119,7 +5142,8 @@ export default {
 			description: 'Select the previous Matrix Input for the Special En-Space Input Bank',
 			options: [],
 			callback: async function () {
-				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() - 1)
+				const step = self.resolveRotaryStep(1, 10)
+				self.setSpecialEnSpaceInput(self.getSpecialEnSpaceInput() - step)
 			},
 		}
 
@@ -5138,7 +5162,7 @@ export default {
 			],
 			callback: async function (action) {
 				const matrixInput = self.getSpecialEnSpaceInput()
-				const step = Number(action.options.reverbsendgain) || 0.5
+				const step = self.resolveRotaryStep(Number(action.options.reverbsendgain) || 0.5, 6.0)
 				let current = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
 				if (current === null || current === undefined) current = 0
 				let next = current + step
@@ -5166,7 +5190,7 @@ export default {
 			],
 			callback: async function (action) {
 				const matrixInput = self.getSpecialEnSpaceInput()
-				const step = Number(action.options.reverbsendgain) || 0.5
+				const step = self.resolveRotaryStep(Number(action.options.reverbsendgain) || 0.5, 6.0)
 				let current = self.DATA?.matrixInput?.[matrixInput]?.reverbSendGain
 				if (current === null || current === undefined) current = 0
 				let next = current - step
@@ -5295,6 +5319,18 @@ export default {
 
 		self.attachPollSubscriptions(actions)
 		self.setActionDefinitions(actions)
+	},
+
+	/**
+	 * While a Stream Deck encoder is held (pressRotaryEncoder), use coarse step.
+	 */
+	resolveRotaryStep(fine, coarse) {
+		const self = this
+		const f = Number(fine)
+		const c = Number(coarse)
+		const fineStep = Number.isFinite(f) ? f : 0
+		const coarseStep = Number.isFinite(c) ? c : fineStep
+		return self.DATA?.rotaryEncoderPressed ? coarseStep : fineStep
 	},
 
 	getSpecialEnSpaceInput() {

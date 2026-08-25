@@ -112,7 +112,7 @@ export default {
 
 			presets[`${idBase}_rotary`] = {
 				type: 'simple',
-				name: `${label} Rotary — EXAMPLE: ${nameHint} (↻ inc / ↺ dec)`,
+				name: `${label} Rotary — EXAMPLE: ${nameHint} (↻ inc / ↺ dec; hold = coarse)`,
 				keywords: ['rotary', 'encoder', 'streamdeck', 'example', 'inc', 'dec'],
 				style: {
 					...rotaryButtonStyle,
@@ -121,8 +121,8 @@ export default {
 				localVariables,
 				steps: [
 					{
-						down: [],
-						up: [],
+						down: [{ actionId: 'pressRotaryEncoder', options: {} }],
+						up: [{ actionId: 'releaseRotaryEncoder', options: {} }],
 						rotate_left: [{ actionId: decreaseActionId, options }],
 						rotate_right: [{ actionId: increaseActionId, options }],
 					},
@@ -1420,13 +1420,13 @@ export default {
 		}
 		presets.special_enspace_input_rotary = {
 			type: 'simple',
-			name: 'Special En-Space - Matrix Input Rotary (↻ inc / ↺ dec)',
+			name: 'Special En-Space - Matrix Input Rotary (↻ +1 / ↺ −1; hold = ±10)',
 			keywords: ['special', 'enspace', 'matrixinput', 'rotary', 'encoder'],
 			style: { ...rotaryButtonStyle, text: 'Input' },
 			steps: [
 				{
-					down: [],
-					up: [],
+					down: [{ actionId: 'pressRotaryEncoder', options: {} }],
+					up: [{ actionId: 'releaseRotaryEncoder', options: {} }],
 					rotate_left: [{ actionId: 'decreaseSpecialEnSpaceInput', options: {} }],
 					rotate_right: [{ actionId: 'increaseSpecialEnSpaceInput', options: {} }],
 				},
@@ -1496,13 +1496,13 @@ export default {
 		}
 		presets.special_enspace_send_rotary = {
 			type: 'simple',
-			name: 'Special En-Space - Send Gain Rotary (↻ inc / ↺ dec)',
+			name: 'Special En-Space - Send Gain Rotary (↻ inc / ↺ dec; hold = 6 dB)',
 			keywords: ['special', 'enspace', 'send', 'gain', 'rotary', 'encoder'],
 			style: { ...rotaryButtonStyle, text: 'EnSp Send' },
 			steps: [
 				{
-					down: [],
-					up: [],
+					down: [{ actionId: 'pressRotaryEncoder', options: {} }],
+					up: [{ actionId: 'releaseRotaryEncoder', options: {} }],
 					rotate_left: [
 						{ actionId: 'decreaseSpecialEnSpaceSendGain', options: { reverbsendgain: 0.5 } },
 					],

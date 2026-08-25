@@ -36,6 +36,7 @@ Install the built package into Companion's modules folder (or use a local module
 
 ## Version history
 
+- **2.0.0-beta.15.24** — Rotary hold = coarse steps (dB 6 / delay 10ms / input 10)
 - **2.0.0-beta.15.23** — Rename section to Special Presets; Input Select rotary
 - **2.0.0-beta.15.22** — Special Presets: Display Input Name (polled channelname)
 - **2.0.0-beta.15.21** — Spezial Send Display: line1 In N, line2 value dB only
