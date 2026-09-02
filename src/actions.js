@@ -1,3 +1,11 @@
+import {
+	applyAllDiscreteLocal,
+	applyAllMatrixNodeDelayEnableLocal,
+	applyAllSoundObjectRoutingMuteLocal,
+	effectiveMatrixInputCount,
+	effectiveMatrixOutputCount,
+} from './all-button-feedback.js'
+
 export default {
 	initActions: function () {
 		let self = this
@@ -97,6 +105,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/mute/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixInput',
+					field: 'mute',
+					value: mute,
+					countFn: effectiveMatrixInputCount,
+				})
+				self.checkFeedbacks('matrixInputMuteAll', 'matrixInputMute')
 			},
 		}
 
@@ -304,6 +319,11 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/delay/' + matrixInput, args)
+				const id = String(matrixInput)
+				if (self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].delay = delay
+				}
+				self.checkFeedbacks('matrixInputDelay')
 			},
 		}
 
@@ -353,7 +373,7 @@ export default {
 					type: 'number',
 					label: 'Delay Increase Amount',
 					id: 'delay',
-					default: 1,
+					default: 0.5,
 					min: 0.1,
 					max: 6.0,
 					required: true,
@@ -362,26 +382,21 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
-				let currentDelay = self.DATA?.matrixInput[matrixInput].delay
+				let currentDelay = self.DATA?.matrixInput?.[matrixInput]?.delay
+				if (currentDelay === null || currentDelay === undefined) currentDelay = 0
 
-				if (currentDelay !== undefined) {
-					let newDelay = currentDelay + delay
+				let newDelay = currentDelay + delay
+				if (newDelay > 500.0) newDelay = 500.0
 
-					if (newDelay > 500.0) {
-						newDelay = 500.0
-					}
-
-					let args = [
-						{
-							type: 'f',
-							value: newDelay,
-						},
-					]
-
-					self.sendCommand('/matrixinput/delay/' + matrixInput, args)
+				self.sendCommand('/matrixinput/delay/' + matrixInput, [
+					{ type: 'f', value: newDelay },
+				])
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].delay = newDelay
 				}
+				self.checkFeedbacks('matrixInputDelay')
 			},
 		}
 
@@ -402,7 +417,7 @@ export default {
 					type: 'number',
 					label: 'Delay Decrease Amount',
 					id: 'delay',
-					default: 1,
+					default: 0.5,
 					min: 0.1,
 					max: 6.0,
 					required: true,
@@ -411,26 +426,21 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixInput = options.matrixinput.toString()
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
-				let currentDelay = self.DATA?.matrixInput[matrixInput].delay
+				let currentDelay = self.DATA?.matrixInput?.[matrixInput]?.delay
+				if (currentDelay === null || currentDelay === undefined) currentDelay = 0
 
-				if (currentDelay !== undefined) {
-					let newDelay = currentDelay - delay
+				let newDelay = currentDelay - delay
+				if (newDelay < 0.0) newDelay = 0.0
 
-					if (newDelay < 0.0) {
-						newDelay = 0.0
-					}
-
-					let args = [
-						{
-							type: 'f',
-							value: newDelay,
-						},
-					]
-
-					self.sendCommand('/matrixinput/delay/' + matrixInput, args)
+				self.sendCommand('/matrixinput/delay/' + matrixInput, [
+					{ type: 'f', value: newDelay },
+				])
+				if (self.DATA?.matrixInput?.[matrixInput]) {
+					self.DATA.matrixInput[matrixInput].delay = newDelay
 				}
+				self.checkFeedbacks('matrixInputDelay')
 			},
 		}
 
@@ -501,6 +511,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/delayenable/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixInput',
+					field: 'delayEnable',
+					value: delayEnable,
+					countFn: effectiveMatrixInputCount,
+				})
+				self.checkFeedbacks('matrixInputDelayEnableAll', 'matrixInputDelayEnable')
 			},
 		}
 
@@ -571,6 +588,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/eqenable/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixInput',
+					field: 'eqEnable',
+					value: eqEnable,
+					countFn: effectiveMatrixInputCount,
+				})
+				self.checkFeedbacks('matrixInputEQEnableAll', 'matrixInputEQEnable')
 			},
 		}
 
@@ -641,6 +665,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixinput/polarity/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixInput',
+					field: 'polarity',
+					value: polarity,
+					countFn: effectiveMatrixInputCount,
+				})
+				self.checkFeedbacks('matrixInputPolarityAll', 'matrixInputPolarity')
 			},
 		}
 
@@ -1003,6 +1034,8 @@ export default {
 				]
 
 				self.sendCommand('/matrixnode/delayenable/' + '*' + '/' + '*', args)
+				applyAllMatrixNodeDelayEnableLocal(self, delayEnable)
+				self.checkFeedbacks('matrixNodeDelayEnableAll', 'matrixNodeDelayEnable')
 			},
 		}
 
@@ -1109,7 +1142,7 @@ export default {
 					type: 'number',
 					label: 'Delay Increase Amount',
 					id: 'delay',
-					default: 1,
+					default: 0.5,
 					min: 0.1,
 					max: 6.0,
 					required: true,
@@ -1120,7 +1153,7 @@ export default {
 				let input = options.input.toString()
 				let output = options.output.toString()
 				let matrixNode = options.input + '/' + options.output
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
 				let currentDelay = self.DATA?.matrixNode[input][output].delay
 
@@ -1169,7 +1202,7 @@ export default {
 					type: 'number',
 					label: 'Delay Decrease Amount',
 					id: 'delay',
-					default: 1,
+					default: 0.5,
 					min: 0.1,
 					max: 6.0,
 					required: true,
@@ -1180,7 +1213,7 @@ export default {
 				let input = options.input.toString()
 				let output = options.output.toString()
 				let matrixNode = options.input + '/' + options.output
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
 				let currentDelay = self.DATA?.matrixNode[input][output].delay
 
@@ -1270,6 +1303,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixoutput/mute/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixOutput',
+					field: 'mute',
+					value: mute,
+					countFn: effectiveMatrixOutputCount,
+				})
+				self.checkFeedbacks('matrixOutputMuteAll', 'matrixOutputMute')
 			},
 		}
 
@@ -1524,7 +1564,7 @@ export default {
 					type: 'number',
 					label: 'Delay Increase Amount',
 					id: 'delay',
-					default: 1,
+					default: 0.5,
 					min: 0.1,
 					max: 6.0,
 					required: true,
@@ -1533,7 +1573,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput.toString()
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
 				let currentDelay = self.DATA?.matrixOutput[matrixOutput].delay
 
@@ -1573,7 +1613,7 @@ export default {
 					type: 'number',
 					label: 'Delay Decrease Amount',
 					id: 'delay',
-					default: 1,
+					default: 0.5,
 					min: 0.1,
 					max: 6.0,
 					required: true,
@@ -1582,7 +1622,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let matrixOutput = options.matrixoutput.toString()
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
 				let currentDelay = self.DATA?.matrixOutput[matrixOutput].delay
 
@@ -1672,6 +1712,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixoutput/delayenable/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixOutput',
+					field: 'delayEnable',
+					value: delayEnable,
+					countFn: effectiveMatrixOutputCount,
+				})
+				self.checkFeedbacks('matrixOutputDelayEnableAll', 'matrixOutputDelayEnable')
 			},
 		}
 
@@ -1742,6 +1789,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixoutput/eqenable/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixOutput',
+					field: 'eqEnable',
+					value: eqEnable,
+					countFn: effectiveMatrixOutputCount,
+				})
+				self.checkFeedbacks('matrixOutputEQEnableAll', 'matrixOutputEQEnable')
 			},
 		}
 
@@ -1812,6 +1866,13 @@ export default {
 				]
 
 				self.sendCommand('/matrixoutput/polarity/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'matrixOutput',
+					field: 'polarity',
+					value: polarity,
+					countFn: effectiveMatrixOutputCount,
+				})
+				self.checkFeedbacks('matrixOutputPolarityAll', 'matrixOutputPolarity')
 			},
 		}
 
@@ -4028,6 +4089,13 @@ export default {
 				]
 
 				self.sendCommand('/reverbinputprocessing/mute/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'reverbInputProcessing',
+					field: 'mute',
+					value: mute,
+					countFn: effectiveMatrixInputCount,
+				})
+				self.checkFeedbacks('reverbInputProcessingMuteAll', 'reverbInputProcessingMute')
 			},
 		}
 
@@ -4410,6 +4478,13 @@ export default {
 				]
 
 				self.sendCommand('/reverbinputprocessing/eqenable/' + '*', args)
+				applyAllDiscreteLocal(self, {
+					store: 'reverbInputProcessing',
+					field: 'eqEnable',
+					value: eqEnable,
+					countFn: effectiveMatrixInputCount,
+				})
+				self.checkFeedbacks('reverbInputProcessingEQEnableAll', 'reverbInputProcessingEQEnable')
 			},
 		}
 
@@ -4629,6 +4704,8 @@ export default {
 				]
 
 				self.sendCommand('/soundobjectrouting/mute/*/*', args)
+				applyAllSoundObjectRoutingMuteLocal(self, mute)
+				self.checkFeedbacks('soundObjectRoutingMuteAll', 'soundObjectRoutingMute')
 			},
 		}
 
@@ -5033,7 +5110,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
 				let currentDelay = self.DATA?.functionGroup[functionGroup].delay
 
@@ -5081,7 +5158,7 @@ export default {
 			callback: async function (action) {
 				let options = action.options
 				let functionGroup = options.functiongroup.toString()
-				let delay = self.resolveRotaryStep(Number(options.delay) || 1, 10)
+				let delay = self.resolveRotaryStep(Number(options.delay) || 0.5, 5)
 
 				let currentDelay = self.DATA?.functionGroup[functionGroup].delay
 

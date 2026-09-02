@@ -1,6 +1,6 @@
-# d&b audiotechnik Soundscape Engines: DS110, DS100, DS100M
+# d&b audiotechnik Soundscape Processor: DS110; DS100; DS100M
 
-This module controls d&b audiotechnik Soundscape Engines using the OSC protocol over UDP.
+This module controls d&b audiotechnik Soundscape Processor devices using the OSC protocol over UDP.
 
 ## Supported Devices
 
@@ -73,4 +73,15 @@ Variables are available for all matrix input, output, and node parameters, as we
 
 ## Presets
 
--
+Structured preset sections: Matrix Input/Output/Node, Reverb Processing, Sound Object Routing, Scene, En-Space, and **Special Presets** (En-Space Input Bank).
+
+**Full guide (German):** [Preset manual — variables, displays, rotary encoders](../docs/PRESETS-MANUAL.md)
+
+Quick summary:
+
+- **EXAMPLE** presets use **Local Variables** (`matrixinput`, `functiongroup`, …) — set after placing, duplicate the button for more channels.
+- **Latch** = two-step on/off with color feedback; **All** = all channels (grey / active / yellow ≠ when mixed).
+- **Display** = black button, live value via feedback only (no press action).
+- **Rotary** = Stream Deck Plus encoder; hold while turning for coarse steps.
+- **Special Presets** share one module-wide Matrix Input selector for En-Space send, name, and zone controls.
+

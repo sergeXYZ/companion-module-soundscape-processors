@@ -1,5 +1,12 @@
 import { InstanceStatus } from '@companion-module/base'
 import OSC from 'osc'
+// ALL-BUTTON-FEEDBACK
+import {
+	tryApplyBulkDiscreteResponse,
+	normalizeDiscreteValue,
+	oscIdAfterSegment,
+	oscIdsAfterSegment,
+} from './all-button-feedback.js'
 
 export default {
 	isPollingEnabled() {
@@ -288,6 +295,11 @@ export default {
 			self.oscReady = true
 			self.log('info', `OSC port is in "ready" state (listening on ${localPort})`)
 			self.updateStatus(InstanceStatus.Ok)
+			self.flushPendingPollPaths?.()
+			// Re-run action subscribes so poll paths register after OSC is up (Companion 5)
+			if (typeof self.subscribeActions === 'function') {
+				self.subscribeActions()
+			}
 			self.getData()
 			self.applyPolling()
 		})
@@ -310,7 +322,7 @@ export default {
 			if (message.includes('EADDRINUSE')) {
 				self.log(
 					'error',
-					`UDP port ${localPort} is already in use. Stop other OSC tools using this port (e.g. another Companion connection or bridge) or change "OSC Port to Listen To".`
+					`UDP port ${localPort} is already in use. Stop other OSC tools using this port (e.g. another Companion connection, the official dbaudiotechnik-dsp module, or a bridge) or change "OSC Port to Listen To". Polling and feedback from the DS100 will not work until the port is free.`
 				)
 				self.updateStatus(
 					InstanceStatus.ConnectionFailure,
@@ -499,6 +511,15 @@ export default {
 		}
 
 		try {
+			// ALL-BUTTON-FEEDBACK: wildcard bulk replies (e.g. 128× mute on /matrixinput/mute/*)
+			const bulkResult = tryApplyBulkDiscreteResponse(self, oscMsg, address)
+			if (bulkResult.handled) {
+				if (!bulkResult.deferFeedback && bulkResult.feedbackIds?.length) {
+					self.checkFeedbacks(...bulkResult.feedbackIds)
+				}
+				return
+			}
+
 			let variableObj = {}
 
 			if (address.indexOf('/status/matrixinputcount') !== -1) {
@@ -559,10 +580,12 @@ export default {
 
 				variableObj = { status_audio_network_sample_status: value }
 			} else if (address.indexOf('/matrixinput/mute/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixInput[id].mute = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixinput${id}_mute`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'mute')
+				if (id && self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].mute = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixInput[id].mute === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixinput${id}_mute`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixinput/reverbsendgain/') !== -1) {
 				// Must be before /matrixinput/gain/ (longer path first)
 				let id = address.split('/')[4].toString()
@@ -578,24 +601,32 @@ export default {
 				variableObj = { [`matrixinput${id}_gain`]: gainDisplay }
 			} else if (address.indexOf('/matrixinput/delay/') !== -1) {
 				let id = address.split('/')[4].toString()
-				self.DATA.matrixInput[id].delay = value
-				variableObj = { [`matrixinput${id}_delay`]: value }
+				if (self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].delay = value
+				}
+				const delayDisplay = typeof value === 'number' && Number.isFinite(value) ? value.toFixed(2) : value
+				variableObj = { [`matrixinput${id}_delay`]: delayDisplay }
 			} else if (address.indexOf('/matrixinput/delayenable/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixInput[id].delayEnable = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixinput${id}_delay_enable`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'delayenable')
+				if (id && self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].delayEnable = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixInput[id].delayEnable === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixinput${id}_delay_enable`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixinput/eqenable/') !== -1) {
-				let id = address.split('/')[4].toString()
-				//console.log('id was : ' + id)
-				self.DATA.matrixInput[id].eqEnable = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixinput${id}_eq_enable`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'eqenable')
+				if (id && self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].eqEnable = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixInput[id].eqEnable === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixinput${id}_eq_enable`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixinput/polarity/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixInput[id].polarity = value
-				let valueFriendly = value === 0 ? 'Normal' : 'Reversed'
-				variableObj = { [`matrixinput${id}_polarity`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'polarity')
+				if (id && self.DATA?.matrixInput?.[id]) {
+					self.DATA.matrixInput[id].polarity = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixInput[id].polarity === 0 ? 'Normal' : 'Reversed'
+					variableObj = { [`matrixinput${id}_polarity`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixinput/channelname/') !== -1) {
 				let id = address.split('/')[4].toString()
 				//console.log('id was : ' + id)
@@ -623,21 +654,24 @@ export default {
 				self.DATA.matrixNode[id][id2].gain = value
 				variableObj = { [`matrixnode${id}_${id2}_gain`]: value }
 			} else if (address.indexOf('/matrixnode/delayenable/') !== -1) {
-				let id = address.split('/')[4].toString()
-				let id2 = address.split('/')[5].toString()
-				self.DATA.matrixNode[id][id2].delayEnable = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixnode${id}_${id2}_delay_enable`]: valueFriendly }
+				const [id, id2] = oscIdsAfterSegment(address, 'delayenable')
+				if (id && id2 && self.DATA?.matrixNode?.[id]?.[id2]) {
+					self.DATA.matrixNode[id][id2].delayEnable = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixNode[id][id2].delayEnable === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixnode${id}_${id2}_delay_enable`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixnode/delay/') !== -1) {
 				let id = address.split('/')[4].toString()
 				let id2 = address.split('/')[5].toString()
 				self.DATA.matrixNode[id][id2].delay = value
 				variableObj = { [`matrixnode${id}_${id2}_delay`]: value }
 			} else if (address.indexOf('/matrixoutput/mute/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixOutput[id].mute = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixoutput${id}_mute`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'mute')
+				if (id && self.DATA?.matrixOutput?.[id]) {
+					self.DATA.matrixOutput[id].mute = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixOutput[id].mute === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixoutput${id}_mute`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixoutput/gain/') !== -1) {
 				let id = address.split('/')[4].toString()
 				self.DATA.matrixOutput[id].gain = value
@@ -647,20 +681,26 @@ export default {
 				self.DATA.matrixOutput[id].delay = value
 				variableObj = { [`matrixoutput${id}_delay`]: value }
 			} else if (address.indexOf('/matrixoutput/delayenable/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixOutput[id].delayEnable = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixoutput${id}_delay_enable`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'delayenable')
+				if (id && self.DATA?.matrixOutput?.[id]) {
+					self.DATA.matrixOutput[id].delayEnable = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixOutput[id].delayEnable === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixoutput${id}_delay_enable`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixoutput/eqenable/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixOutput[id].eqEnable = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`matrixoutput${id}_eq_enable`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'eqenable')
+				if (id && self.DATA?.matrixOutput?.[id]) {
+					self.DATA.matrixOutput[id].eqEnable = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixOutput[id].eqEnable === 1 ? 'On' : 'Off'
+					variableObj = { [`matrixoutput${id}_eq_enable`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixoutput/polarity/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.matrixOutput[id].polarity = value
-				let valueFriendly = value === 0 ? 'Normal' : 'Reversed'
-				variableObj = { [`matrixoutput${id}_polarity`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'polarity')
+				if (id && self.DATA?.matrixOutput?.[id]) {
+					self.DATA.matrixOutput[id].polarity = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.matrixOutput[id].polarity === 0 ? 'Normal' : 'Reversed'
+					variableObj = { [`matrixoutput${id}_polarity`]: valueFriendly }
+				}
 			} else if (address.indexOf('/matrixoutput/channelname/') !== -1) {
 				let id = address.split('/')[4].toString()
 				self.DATA.matrixOutput[id].channelName = value
@@ -827,10 +867,12 @@ export default {
 				const gainDisplay = typeof value === 'number' && Number.isFinite(value) ? value.toFixed(2) : value
 				variableObj = { [`reverbinput_gain_${id}_zone${id2}`]: gainDisplay }
 			} else if (address.indexOf('/reverbinputprocessing/mute/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.reverbInputProcessing[id].mute = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`reverbinputprocessing_mute_${id}`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'mute')
+				if (id && self.DATA?.reverbInputProcessing?.[id]) {
+					self.DATA.reverbInputProcessing[id].mute = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.reverbInputProcessing[id].mute === 1 ? 'On' : 'Off'
+					variableObj = { [`reverbinputprocessing_mute_${id}`]: valueFriendly }
+				}
 			} else if (address.indexOf('/reverbinputprocessing/gain/') !== -1) {
 				let id = address.split('/')[4].toString()
 				self.DATA.reverbInputProcessing[id].gain = value
@@ -840,10 +882,12 @@ export default {
 				self.DATA.reverbInputProcessing[id].levelMeter = value
 				variableObj = { [`reverbinputprocessing_level_meter_${id}`]: value }
 			} else if (address.indexOf('/reverbinputprocessing/eqenable/') !== -1) {
-				let id = address.split('/')[4].toString()
-				self.DATA.reverbInputProcessing[id].eqEnable = value
-				let valueFriendly = value === 1 ? 'On' : 'Off'
-				variableObj = { [`reverbinputprocessing_eq_enable_${id}`]: valueFriendly }
+				const id = oscIdAfterSegment(address, 'eqenable')
+				if (id && self.DATA?.reverbInputProcessing?.[id]) {
+					self.DATA.reverbInputProcessing[id].eqEnable = normalizeDiscreteValue(value)
+					let valueFriendly = self.DATA.reverbInputProcessing[id].eqEnable === 1 ? 'On' : 'Off'
+					variableObj = { [`reverbinputprocessing_eq_enable_${id}`]: valueFriendly }
+				}
 			} else if (address.indexOf('/scene/sceneindex') !== -1) {
 				self.DATA.sceneIndex = value
 				variableObj = { scene_index: value }
@@ -854,11 +898,12 @@ export default {
 				self.DATA.sceneComment = value
 				variableObj = { scene_comment: value }
 			} else if (address.indexOf('/soundobjectrouting/mute/') !== -1) {
-				let id = address.split('/')[4].toString()
-				let id2 = address.split('/')[5].toString()
-				const muteValue = Number(value) === 1 ? 1 : 0
-				self.DATA.soundObjectRouting[id][id2].mute = muteValue
-				variableObj = { [`soundobjectrouting_mute_${id}_${id2}`]: muteValue }
+				const [id, id2] = oscIdsAfterSegment(address, 'mute')
+				if (id && id2 && self.DATA?.soundObjectRouting?.[id]?.[id2]) {
+					const muteValue = normalizeDiscreteValue(value)
+					self.DATA.soundObjectRouting[id][id2].mute = muteValue
+					variableObj = { [`soundobjectrouting_mute_${id}_${id2}`]: muteValue }
+				}
 			} else if (address.indexOf('/soundobjectrouting/gain/') !== -1) {
 				let id = address.split('/')[4].toString()
 				let id2 = address.split('/')[5].toString()
@@ -941,7 +986,7 @@ export default {
 
 			self.setVariableValues(variableObj)
 			if (address.indexOf('/soundobjectrouting/mute/') !== -1) {
-				self.checkFeedbacks('soundObjectRoutingMute')
+				self.checkFeedbacks('soundObjectRoutingMute', 'soundObjectRoutingMuteAll')
 			} else if (address.indexOf('/soundobjectrouting/gain/') !== -1) {
 				self.checkFeedbacks('soundObjectRoutingGain')
 			} else if (address.indexOf('/positioning/source_delaymode/') !== -1) {
@@ -953,32 +998,38 @@ export default {
 				)
 			} else if (address.indexOf('/matrixinput/gain/') !== -1) {
 				self.checkFeedbacks('matrixInputGain')
+			} else if (address.indexOf('/matrixinput/delay/') !== -1) {
+				self.checkFeedbacks('matrixInputDelay')
 			} else if (address.indexOf('/matrixinput/mute/') !== -1) {
-				self.checkFeedbacks('matrixInputMute')
+				self.checkFeedbacks('matrixInputMute', 'matrixInputMuteAll')
 			} else if (address.indexOf('/matrixinput/delayenable/') !== -1) {
-				self.checkFeedbacks('matrixInputDelayEnable')
+				self.checkFeedbacks('matrixInputDelayEnable', 'matrixInputDelayEnableAll')
 			} else if (address.indexOf('/matrixinput/eqenable/') !== -1) {
-				self.checkFeedbacks('matrixInputEQEnable')
+				self.checkFeedbacks('matrixInputEQEnable', 'matrixInputEQEnableAll')
 			} else if (address.indexOf('/matrixinput/polarity/') !== -1) {
-				self.checkFeedbacks('matrixInputPolarity')
+				self.checkFeedbacks('matrixInputPolarity', 'matrixInputPolarityAll')
 			} else if (address.indexOf('/matrixinput/channelname/') !== -1) {
 				self.checkFeedbacks('matrixInputChannelName', 'specialEnSpaceInputName')
 			} else if (address.indexOf('/matrixoutput/gain/') !== -1) {
 				self.checkFeedbacks('matrixOutputGain')
+			} else if (address.indexOf('/matrixoutput/delay/') !== -1) {
+				self.checkFeedbacks('matrixOutputDelay')
 			} else if (address.indexOf('/matrixoutput/mute/') !== -1) {
-				self.checkFeedbacks('matrixOutputMute')
+				self.checkFeedbacks('matrixOutputMute', 'matrixOutputMuteAll')
 			} else if (address.indexOf('/matrixoutput/delayenable/') !== -1) {
-				self.checkFeedbacks('matrixOutputDelayEnable')
+				self.checkFeedbacks('matrixOutputDelayEnable', 'matrixOutputDelayEnableAll')
 			} else if (address.indexOf('/matrixoutput/eqenable/') !== -1) {
-				self.checkFeedbacks('matrixOutputEQEnable')
+				self.checkFeedbacks('matrixOutputEQEnable', 'matrixOutputEQEnableAll')
 			} else if (address.indexOf('/matrixoutput/polarity/') !== -1) {
-				self.checkFeedbacks('matrixOutputPolarity')
+				self.checkFeedbacks('matrixOutputPolarity', 'matrixOutputPolarityAll')
 			} else if (address.indexOf('/matrixnode/gain/') !== -1) {
 				self.checkFeedbacks('matrixNodeGain')
+			} else if (address.indexOf('/matrixnode/delay/') !== -1) {
+				self.checkFeedbacks('matrixNodeDelay')
 			} else if (address.indexOf('/matrixnode/enable/') !== -1) {
 				self.checkFeedbacks('matrixNodeEnable')
 			} else if (address.indexOf('/matrixnode/delayenable/') !== -1) {
-				self.checkFeedbacks('matrixNodeDelayEnable')
+				self.checkFeedbacks('matrixNodeDelayEnable', 'matrixNodeDelayEnableAll')
 			} else if (address.indexOf('/scene/') !== -1) {
 				self.checkFeedbacks('sceneIndex')
 			} else if (address.indexOf('/matrixsettings/reverbroomid') !== -1) {
@@ -991,6 +1042,10 @@ export default {
 				self.checkFeedbacks('matrixInputReverbSendGain', 'specialEnSpaceSendGain')
 			} else if (address.indexOf('/reverbinput/gain/') !== -1) {
 				self.checkFeedbacks('reverbInputGain', 'specialEnSpaceZoneGain')
+			} else if (address.indexOf('/reverbinputprocessing/mute/') !== -1) {
+				self.checkFeedbacks('reverbInputProcessingMute', 'reverbInputProcessingMuteAll')
+			} else if (address.indexOf('/reverbinputprocessing/eqenable/') !== -1) {
+				self.checkFeedbacks('reverbInputProcessingEQEnable', 'reverbInputProcessingEQEnableAll')
 			} else {
 				self.scheduleFeedbackCheck()
 			}
@@ -1021,6 +1076,6 @@ export default {
 		if (self.DATA?.soundObjectRouting?.[fg]?.[so]) {
 			self.DATA.soundObjectRouting[fg][so].mute = muteValue
 		}
-		self.checkFeedbacks('soundObjectRoutingMute')
+		self.checkFeedbacks('soundObjectRoutingMute', 'soundObjectRoutingMuteAll')
 	},
 }

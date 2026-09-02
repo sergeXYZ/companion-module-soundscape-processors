@@ -13,6 +13,8 @@ import api from './src/api.js'
 
 import constants from './src/constants.js'
 import subscriptions from './src/subscriptions.js'
+// ALL-BUTTON-FEEDBACK
+import { clearWildcardDiscreteAccum } from './src/all-button-feedback.js'
 
 class dbaudiotechnikDspInstance extends InstanceBase {
 	constructor(internal) {
@@ -44,6 +46,7 @@ class dbaudiotechnikDspInstance extends InstanceBase {
 
 	async destroy() {
 		try {
+			clearWildcardDiscreteAccum(this)
 			this.clearPollingTimers()
 			clearInterval(this.RECONNECT_INTERVAL)
 			clearTimeout(this.feedbackCheckTimer)

@@ -39,6 +39,11 @@ export const COLORS = {
 		bgcolor: combineRgb(0, 0, 0),
 		color: combineRgb(255, 255, 255),
 	},
+	/** ALL-BUTTON-FEEDBACK: mixed / Ungleich state for Latch-All presets */
+	unequal: {
+		bgcolor: combineRgb(255, 255, 0),
+		color: combineRgb(0, 0, 0),
+	},
 	/** Stream Deck rotary / encoder presets (no display feedback) */
 	rotary: {
 		bgcolor: combineRgb(0xff, 0xc0, 0xff),

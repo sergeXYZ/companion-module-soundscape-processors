@@ -1,6 +1,11 @@
 import { combineRgb } from '@companion-module/base'
 import { COLORS } from './colours.js'
 import { getEnSpaceRoomPng64 } from './enspace-rooms.js'
+// ALL-BUTTON-FEEDBACK
+import {
+	ALL_BUTTON_TRIPLE_STATE_ENABLED,
+	buildAllButtonFeedbackDefinitions,
+} from './all-button-feedback.js'
 
 export default {
 	initFeedbacks: function () {
@@ -31,15 +36,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let input = options.matrixinput
-
-				if (self.DATA.matrixInput[input].mute === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = Number(feedback.options.matrixinput)
+				return Number(self.DATA?.matrixInput?.[input]?.mute) === 1
 			},
 		}
 
@@ -59,15 +58,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let input = options.matrixinput
-
-				if (self.DATA.matrixInput[input].delayEnable === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = Number(feedback.options.matrixinput)
+				return Number(self.DATA?.matrixInput?.[input]?.delayEnable) === 1
 			},
 		}
 
@@ -87,15 +80,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let input = options.matrixinput
-
-				if (self.DATA.matrixInput[input].eqEnable === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = Number(feedback.options.matrixinput)
+				return Number(self.DATA?.matrixInput?.[input]?.eqEnable) === 1
 			},
 		}
 
@@ -115,15 +102,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let input = options.matrixinput
-
-				if (self.DATA.matrixInput[input].polarity === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = Number(feedback.options.matrixinput)
+				return Number(self.DATA?.matrixInput?.[input]?.polarity) === 1
 			},
 		}
 
@@ -219,9 +200,9 @@ export default {
 				},
 			],
 			callback: function (feedback) {
-				const input = feedback.options.matrixinput
-				const output = feedback.options.matrixoutput
-				return self.DATA?.matrixNode?.[input]?.[output]?.enable === 1
+				const input = Number(feedback.options.matrixinput)
+				const output = Number(feedback.options.matrixoutput)
+				return Number(self.DATA?.matrixNode?.[input]?.[output]?.enable) === 1
 			},
 		}
 
@@ -251,9 +232,9 @@ export default {
 				},
 			],
 			callback: function (feedback) {
-				const input = feedback.options.matrixinput
-				const output = feedback.options.matrixoutput
-				return self.DATA?.matrixNode?.[input]?.[output]?.delayEnable === 1
+				const input = Number(feedback.options.matrixinput)
+				const output = Number(feedback.options.matrixoutput)
+				return Number(self.DATA?.matrixNode?.[input]?.[output]?.delayEnable) === 1
 			},
 		}
 
@@ -273,15 +254,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let output = options.matrixoutput
-
-				if (self.DATA.matrixOutput[output].mute === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const output = Number(feedback.options.matrixoutput)
+				return Number(self.DATA?.matrixOutput?.[output]?.mute) === 1
 			},
 		}
 
@@ -301,15 +276,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let output = options.matrixoutput
-
-				if (self.DATA.matrixOutput[output].delayEnable === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const output = Number(feedback.options.matrixoutput)
+				return Number(self.DATA?.matrixOutput?.[output]?.delayEnable) === 1
 			},
 		}
 
@@ -329,15 +298,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let output = options.matrixoutput
-
-				if (self.DATA.matrixOutput[output].eqEnable === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const output = Number(feedback.options.matrixoutput)
+				return Number(self.DATA?.matrixOutput?.[output]?.eqEnable) === 1
 			},
 		}
 
@@ -357,15 +320,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let output = options.matrixoutput
-
-				if (self.DATA.matrixOutput[output].polarity === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const output = Number(feedback.options.matrixoutput)
+				return Number(self.DATA?.matrixOutput?.[output]?.polarity) === 1
 			},
 		}
 
@@ -451,15 +408,9 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let input = options.reverbinputprocessing
-
-				if (self.reverbInputProcessing[input].mute === 1) {
-					return true
-				}
-
-				return false
+			callback: function (feedback) {
+				const input = Number(feedback.options.reverbinputprocessing)
+				return Number(self.DATA?.reverbInputProcessing?.[input]?.mute) === 1
 			},
 		}
 
@@ -479,11 +430,10 @@ export default {
 					required: true,
 				},
 			],
-			callback: function (feedback, bank) {
-				let options = feedback.options
-				let input = options.reverbinputprocessing
+			callback: function (feedback) {
+				const input = Number(feedback.options.reverbinputprocessing)
 
-				if (self.DATA?.reverbInputProcessing?.[input]?.eqEnable === 1) {
+				if (Number(self.DATA?.reverbInputProcessing?.[input]?.eqEnable) === 1) {
 					return true
 				}
 
@@ -1286,7 +1236,12 @@ export default {
 			},
 		}
 
-		self.attachPollSubscriptions(feedbacks)
+		// ALL-BUTTON-FEEDBACK: register 3-state All-button feedbacks
+		if (ALL_BUTTON_TRIPLE_STATE_ENABLED) {
+			Object.assign(feedbacks, buildAllButtonFeedbackDefinitions(COLORS, self))
+		}
+
+		// Poll paths: Companion 5 no longer calls feedback subscribe — use action subscribe (see actions.js)
 		self.setFeedbackDefinitions(feedbacks)
 	},
 }

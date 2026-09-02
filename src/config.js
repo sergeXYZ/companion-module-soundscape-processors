@@ -10,7 +10,7 @@ export default {
 				id: 'info',
 				width: 12,
 				label: 'Information',
-				value: 'This module controls d&b audiotechnik Soundscape Engines (DS110, DS100, DS100M) over UDP using Open Sound Control (OSC).',
+				value: 'This module controls d&b audiotechnik Soundscape Processor (DS110; DS100; DS100M) over UDP using Open Sound Control (OSC).',
 			},
 			{
 				type: 'static-text',

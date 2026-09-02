@@ -4,6 +4,8 @@
  * Companion calls subscribe/unsubscribe on actions and feedbacks when buttons
  * use them. We ref-count OSC query paths and only poll what is currently needed.
  */
+// ALL-BUTTON-FEEDBACK
+import { ALL_BUTTON_TRIPLE_STATE_ENABLED, ALL_BUTTON_PATH_BUILDERS } from './all-button-feedback.js'
 
 function optionNumber(options, key, fallback = 1) {
 	const raw = options?.[key]
@@ -12,19 +14,32 @@ function optionNumber(options, key, fallback = 1) {
 	return Number.isFinite(num) ? num : fallback
 }
 
+/** True when an option is still an expression (not a concrete number yet). */
+function optionIsExpression(options, key) {
+	const raw = options?.[key]
+	if (typeof raw === 'object' && raw !== null && raw.isExpression === true) return true
+	const value = typeof raw === 'object' && raw !== null && 'value' in raw ? raw.value : raw
+	return typeof value === 'string' && value.includes('$(')
+}
+
+function matrixInputPath(suffix, o) {
+	if (optionIsExpression(o, 'matrixinput')) return [`/matrixinput/${suffix}/*`]
+	return [`/matrixinput/${suffix}/${optionNumber(o, 'matrixinput')}`]
+}
+
 /** Map action/feedback definitionId -> OSC paths to poll for those options */
 const PATH_BUILDERS = {
 	// Matrix Input
-	matrixInputMute: (o) => [`/matrixinput/mute/${optionNumber(o, 'matrixinput')}`],
-	matrixInputGain: (o) => [`/matrixinput/gain/${optionNumber(o, 'matrixinput')}`],
-	matrixInputDelay: (o) => [`/matrixinput/delay/${optionNumber(o, 'matrixinput')}`],
-	matrixInputDelayEnable: (o) => [`/matrixinput/delayenable/${optionNumber(o, 'matrixinput')}`],
-	matrixInputEQEnable: (o) => [`/matrixinput/eqenable/${optionNumber(o, 'matrixinput')}`],
-	matrixInputPolarity: (o) => [`/matrixinput/polarity/${optionNumber(o, 'matrixinput')}`],
-	matrixInputChannelName: (o) => [`/matrixinput/channelname/${optionNumber(o, 'matrixinput')}`],
-	matrixInputLevelMeterPreMute: (o) => [`/matrixinput/levelmeterpremute/${optionNumber(o, 'matrixinput')}`],
-	matrixInputLevelMeterPostMute: (o) => [`/matrixinput/levelmeterpostmute/${optionNumber(o, 'matrixinput')}`],
-	matrixInputReverbSendGain: (o) => [`/matrixinput/reverbsendgain/${optionNumber(o, 'matrixinput')}`],
+	matrixInputMute: (o) => matrixInputPath('mute', o),
+	matrixInputGain: (o) => matrixInputPath('gain', o),
+	matrixInputDelay: (o) => matrixInputPath('delay', o),
+	matrixInputDelayEnable: (o) => matrixInputPath('delayenable', o),
+	matrixInputEQEnable: (o) => matrixInputPath('eqenable', o),
+	matrixInputPolarity: (o) => matrixInputPath('polarity', o),
+	matrixInputChannelName: (o) => matrixInputPath('channelname', o),
+	matrixInputLevelMeterPreMute: (o) => matrixInputPath('levelmeterpremute', o),
+	matrixInputLevelMeterPostMute: (o) => matrixInputPath('levelmeterpostmute', o),
+	matrixInputReverbSendGain: (o) => matrixInputPath('reverbsendgain', o),
 
 	setMatrixInputMute: (o) => PATH_BUILDERS.matrixInputMute(o),
 	setMatrixInputGain: (o) => PATH_BUILDERS.matrixInputGain(o),
@@ -186,6 +201,7 @@ const PATH_BUILDERS = {
 	],
 	setSpecialEnSpaceAllZonesOff: () => ['/reverbinput/gain/*/*'],
 
+
 	reverbInputProcessingMute: (o) => [`/reverbinputprocessing/mute/${optionNumber(o, 'matrixinput')}`],
 	reverbInputProcessingGain: (o) => [`/reverbinputprocessing/gain/${optionNumber(o, 'matrixinput')}`],
 	reverbInputProcessingLevelMeter: (o) => [`/reverbinputprocessing/levelmeter/${optionNumber(o, 'matrixinput')}`],
@@ -233,6 +249,11 @@ const PATH_BUILDERS = {
 	setFunctionGroupDelay: (o) => PATH_BUILDERS.functionGroupDelay(o),
 	increaseFunctionGroupDelay: (o) => PATH_BUILDERS.functionGroupDelay(o),
 	decreaseFunctionGroupDelay: (o) => PATH_BUILDERS.functionGroupDelay(o),
+}
+
+// ALL-BUTTON-FEEDBACK: merge All-button poll paths when feature enabled
+if (ALL_BUTTON_TRIPLE_STATE_ENABLED) {
+	Object.assign(PATH_BUILDERS, ALL_BUTTON_PATH_BUILDERS)
 }
 
 /** Lightweight status queries always polled when polling is enabled (with discrete interval) */
@@ -284,6 +305,15 @@ export default {
 
 	initSubscriptions() {
 		this.pollSubscriptions = new Map() // path -> refCount
+		this.pendingPollPaths = new Set()
+	},
+
+	flushPendingPollPaths() {
+		if (!this.pendingPollPaths?.size || !this.oscReady) return
+		for (const path of this.pendingPollPaths) {
+			this.sendCommand(path, [])
+		}
+		this.pendingPollPaths.clear()
 	},
 
 	isSubscribedPollingEnabled() {
@@ -302,6 +332,8 @@ export default {
 		// Immediate one-shot query so UI fills without waiting for next poll tick
 		if (this.oscReady) {
 			this.sendCommand(path, [])
+		} else if (this.pendingPollPaths) {
+			this.pendingPollPaths.add(path)
 		}
 	},
 
@@ -342,6 +374,14 @@ export default {
 
 		for (const [definitionId, definition] of Object.entries(definitions)) {
 			if (!PATH_BUILDERS[definitionId]) continue
+
+			// Companion 5 / API 2.0+: limit subscribe churn when options use expressions
+			if (definition.subscribe && !definition.optionsToMonitorForSubscribe) {
+				const monitor = (definition.options || [])
+					.filter((opt) => opt?.id && ['number', 'dropdown', 'textinput'].includes(opt.type))
+					.map((opt) => opt.id)
+				if (monitor.length) definition.optionsToMonitorForSubscribe = monitor
+			}
 
 			const previousSubscribe = definition.subscribe
 			const previousUnsubscribe = definition.unsubscribe

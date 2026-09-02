@@ -1,6 +1,8 @@
 import { COLORS, buttonBaseStyle, displayButtonStyle, rotaryButtonStyle } from './colours.js'
 import { getEnSpaceRoomPng64 } from './enspace-rooms.js'
 import { combineRgb } from '@companion-module/base'
+// ALL-BUTTON-FEEDBACK
+import { ALL_BUTTON_TRIPLE_STATE_ENABLED, ALL_BUTTON_PRESET_FEEDBACKS } from './all-button-feedback.js'
 
 export default {
 	initPresets: function () {
@@ -14,7 +16,10 @@ export default {
 			structure.push(section)
 		}
 
-		function addLatchAll({ id, name, text, actionId, optionKey }) {
+		function addLatchAll({ id, name, text, actionId, optionKey, feedbackId }) {
+			// ALL-BUTTON-FEEDBACK: wire 3-state feedback when enabled
+			const resolvedFeedbackId =
+				ALL_BUTTON_TRIPLE_STATE_ENABLED && (feedbackId || ALL_BUTTON_PRESET_FEEDBACKS[id])
 			presets[id] = {
 				type: 'simple',
 				name,
@@ -23,7 +28,7 @@ export default {
 					{ down: [{ actionId, options: { [optionKey]: 1 } }], up: [] },
 					{ down: [{ actionId, options: { [optionKey]: 0 } }], up: [] },
 				],
-				feedbacks: [],
+				feedbacks: resolvedFeedbackId ? [{ feedbackId: resolvedFeedbackId, options: {} }] : [],
 			}
 		}
 
@@ -49,13 +54,15 @@ export default {
 					{ down: [{ actionId, options: onOptions }], up: [] },
 					{ down: [{ actionId, options: offOptions }], up: [] },
 				],
-				feedbacks: [
-					{
-						feedbackId,
-						options: feedbackOptions,
-						style: { ...activeStyle },
-					},
-				],
+				feedbacks: feedbackId
+					? [
+							{
+								feedbackId,
+								options: feedbackOptions || {},
+								style: { ...activeStyle },
+							},
+					  ]
+					: [],
 			}
 		}
 
@@ -75,7 +82,13 @@ export default {
 				keywords: display ? ['example', 'configure', 'display'] : ['example', 'configure'],
 				style: { ...(display ? displayButtonStyle : buttonBaseStyle), text },
 				localVariables,
-				steps: [{ down: [{ actionId, options }], up: [] }],
+				// Display buttons are read-only — no press/set action
+				steps: [
+					{
+						down: display || !actionId ? [] : [{ actionId, options }],
+						up: [],
+					},
+				],
 				feedbacks,
 			}
 		}
@@ -151,6 +164,8 @@ export default {
 			actionId: 'setMatrixInputMute',
 			onOptions: { matrixinput: expr('$(local:matrixinput)'), mute: 1 },
 			offOptions: { matrixinput: expr('$(local:matrixinput)'), mute: 0 },
+			feedbackId: 'matrixInputMute',
+			feedbackOptions: { matrixinput: expr('$(local:matrixinput)') },
 			activeStyle: COLORS.mute,
 		})
 
@@ -169,6 +184,8 @@ export default {
 			actionId: 'setMatrixInputDelayEnable',
 			onOptions: { matrixinput: expr('$(local:matrixinput)'), delayenable: 1 },
 			offOptions: { matrixinput: expr('$(local:matrixinput)'), delayenable: 0 },
+			feedbackId: 'matrixInputDelayEnable',
+			feedbackOptions: { matrixinput: expr('$(local:matrixinput)') },
 			activeStyle: COLORS.delay,
 		})
 
@@ -187,6 +204,8 @@ export default {
 			actionId: 'setMatrixInputEqEnable',
 			onOptions: { matrixinput: expr('$(local:matrixinput)'), eqenable: 1 },
 			offOptions: { matrixinput: expr('$(local:matrixinput)'), eqenable: 0 },
+			feedbackId: 'matrixInputEQEnable',
+			feedbackOptions: { matrixinput: expr('$(local:matrixinput)') },
 			activeStyle: COLORS.eq,
 		})
 
@@ -205,6 +224,8 @@ export default {
 			actionId: 'setMatrixInputPolarity',
 			onOptions: { matrixinput: expr('$(local:matrixinput)'), polarity: 1 },
 			offOptions: { matrixinput: expr('$(local:matrixinput)'), polarity: 0 },
+			feedbackId: 'matrixInputPolarity',
+			feedbackOptions: { matrixinput: expr('$(local:matrixinput)') },
 			activeStyle: COLORS.polarity,
 		})
 
@@ -275,7 +296,7 @@ export default {
 			localVariables: [{ variableType: 'simple', variableName: 'matrixinput', startupValue: 1 }],
 			increaseActionId: 'increaseMatrixInputDelay',
 			decreaseActionId: 'decreaseMatrixInputDelay',
-			options: { matrixinput: expr('$(local:matrixinput)'), delay: 1 },
+			options: { matrixinput: expr('$(local:matrixinput)'), delay: 0.5 },
 			textRotary: 'In $(local:matrixinput)\nDelay',
 		})
 
@@ -489,6 +510,8 @@ export default {
 			actionId: 'setMatrixOutputMute',
 			onOptions: { matrixoutput: expr('$(local:matrixoutput)'), mute: 1 },
 			offOptions: { matrixoutput: expr('$(local:matrixoutput)'), mute: 0 },
+			feedbackId: 'matrixOutputMute',
+			feedbackOptions: { matrixoutput: expr('$(local:matrixoutput)') },
 			activeStyle: COLORS.mute,
 		})
 		addLatchAll({
@@ -506,6 +529,8 @@ export default {
 			actionId: 'setMatrixOutputDelayEnable',
 			onOptions: { matrixoutput: expr('$(local:matrixoutput)'), delayenable: 1 },
 			offOptions: { matrixoutput: expr('$(local:matrixoutput)'), delayenable: 0 },
+			feedbackId: 'matrixOutputDelayEnable',
+			feedbackOptions: { matrixoutput: expr('$(local:matrixoutput)') },
 			activeStyle: COLORS.delay,
 		})
 		addLatchAll({
@@ -523,6 +548,8 @@ export default {
 			actionId: 'setMatrixOutputEqEnable',
 			onOptions: { matrixoutput: expr('$(local:matrixoutput)'), eqenable: 1 },
 			offOptions: { matrixoutput: expr('$(local:matrixoutput)'), eqenable: 0 },
+			feedbackId: 'matrixOutputEQEnable',
+			feedbackOptions: { matrixoutput: expr('$(local:matrixoutput)') },
 			activeStyle: COLORS.eq,
 		})
 		addLatchAll({
@@ -540,6 +567,8 @@ export default {
 			actionId: 'setMatrixOutputPolarity',
 			onOptions: { matrixoutput: expr('$(local:matrixoutput)'), polarity: 1 },
 			offOptions: { matrixoutput: expr('$(local:matrixoutput)'), polarity: 0 },
+			feedbackId: 'matrixOutputPolarity',
+			feedbackOptions: { matrixoutput: expr('$(local:matrixoutput)') },
 			activeStyle: COLORS.polarity,
 		})
 		addMomentaryExample({
@@ -609,7 +638,7 @@ export default {
 			localVariables: [{ variableType: 'simple', variableName: 'matrixoutput', startupValue: 1 }],
 			increaseActionId: 'increaseMatrixOutputDelay',
 			decreaseActionId: 'decreaseMatrixOutputDelay',
-			options: { matrixoutput: expr('$(local:matrixoutput)'), delay: 1 },
+			options: { matrixoutput: expr('$(local:matrixoutput)'), delay: 0.5 },
 			textRotary: 'Out $(local:matrixoutput)\nDelay',
 		})
 
@@ -689,6 +718,7 @@ export default {
 				output: expr('$(local:matrixoutput)'),
 				enable: 0,
 			},
+			feedbackId: 'matrixNodeEnable',
 			feedbackOptions: {
 				matrixinput: expr('$(local:matrixinput)'),
 				matrixoutput: expr('$(local:matrixoutput)'),
@@ -721,6 +751,7 @@ export default {
 				output: expr('$(local:matrixoutput)'),
 				delayenable: 0,
 			},
+			feedbackId: 'matrixNodeDelayEnable',
 			feedbackOptions: {
 				matrixinput: expr('$(local:matrixinput)'),
 				matrixoutput: expr('$(local:matrixoutput)'),
@@ -827,7 +858,7 @@ export default {
 			options: {
 				input: expr('$(local:matrixinput)'),
 				output: expr('$(local:matrixoutput)'),
-				delay: 1,
+				delay: 0.5,
 			},
 			textRotary: 'N $(local:matrixinput)/$(local:matrixoutput)\nDelay',
 		})
@@ -892,6 +923,8 @@ export default {
 			actionId: 'setReverbInputProcessingMute',
 			onOptions: { matrixinput: expr('$(local:reverbzone)'), mute: 1 },
 			offOptions: { matrixinput: expr('$(local:reverbzone)'), mute: 0 },
+			feedbackId: 'reverbInputProcessingMute',
+			feedbackOptions: { reverbinputprocessing: expr('$(local:reverbzone)') },
 			activeStyle: COLORS.mute,
 		})
 		addLatchAll({
@@ -909,6 +942,8 @@ export default {
 			actionId: 'setReverbInputProcessingEqEnable',
 			onOptions: { matrixinput: expr('$(local:reverbzone)'), eqenable: 1 },
 			offOptions: { matrixinput: expr('$(local:reverbzone)'), eqenable: 0 },
+			feedbackId: 'reverbInputProcessingEQEnable',
+			feedbackOptions: { reverbinputprocessing: expr('$(local:reverbzone)') },
 			activeStyle: COLORS.eq,
 		})
 		addMomentaryExample({
@@ -1442,12 +1477,7 @@ export default {
 				color: COLORS.specialTextGreen,
 				text: 'In ?\n—',
 			},
-			steps: [
-				{
-					down: [{ actionId: 'refreshSpecialEnSpaceInputName', options: {} }],
-					up: [],
-				},
-			],
+			steps: [{ down: [], up: [] }],
 			feedbacks: [{ feedbackId: 'specialEnSpaceInputName', options: {} }],
 		}
 
@@ -1460,12 +1490,7 @@ export default {
 				color: COLORS.specialTextGreen,
 				text: 'In ?\n— dB',
 			},
-			steps: [
-				{
-					down: [{ actionId: 'refreshSpecialEnSpaceSendGain', options: {} }],
-					up: [],
-				},
-			],
+			steps: [{ down: [], up: [] }],
 			feedbacks: [{ feedbackId: 'specialEnSpaceSendGain', options: {} }],
 		}
 		presets.special_enspace_send_dec = {

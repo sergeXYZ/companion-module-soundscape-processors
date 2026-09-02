@@ -1,14 +1,16 @@
 # companion-module-soundscape-processors
 
-Bitfocus Companion module for **d&b audiotechnik Soundscape Processors** (DS110; DS100; DS100M) over OSC/UDP.
+Bitfocus Companion module for **d&b audiotechnik Soundscape Processor** (DS110; DS100; DS100M) over OSC/UDP.
 
 Fork of [bitfocus/companion-module-dbaudiotechnik-dsp](https://github.com/bitfocus/companion-module-dbaudiotechnik-dsp) v1.1.0.
 
-Module id: `soundscape-processors` · Current version: **2.0.0-beta.15.13**
+Module id: `soundscape-processors` · Current version: **2.0.0-beta.15.39**
 
 Requires **Companion 4.3+** (tested with Companion 5) — Module API 2.0 / Node 22.
 
-See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedback overview. Internal research notes: [`COMPANION-DNB-MODULE-RESEARCH.md`](COMPANION-DNB-MODULE-RESEARCH.md).
+See [`companion/HELP.md`](companion/HELP.md) for device setup and action/feedback overview.  
+**Preset buttons (variables, displays, rotary):** [`docs/PRESETS-MANUAL.md`](docs/PRESETS-MANUAL.md)  
+Internal research notes: [`COMPANION-DNB-MODULE-RESEARCH.md`](COMPANION-DNB-MODULE-RESEARCH.md).
 
 ## Features (beyond upstream)
 
@@ -28,7 +30,7 @@ yarn install
 yarn build
 ```
 
-Install the built package into Companion's modules folder (or use a local module path), then select version `2.0.0-beta.15.13` on the connection.
+Install the built package into Companion's modules folder (or use a local module path), then select version `2.0.0-beta.15.39` on the connection.
 
 ### Test page helper
 
@@ -36,6 +38,21 @@ Install the built package into Companion's modules folder (or use a local module
 
 ## Version history
 
+- **2.0.0-beta.15.39** — All-button mixed state label (In ALL Mute / ≠); preset manual (`docs/PRESETS-MANUAL.md`)
+- **2.0.0-beta.15.38** — Fix polling: per-channel OSC not swallowed by bulk handler; subscribeActions on OSC ready; Companion 5 poll via actions only
+- **2.0.0-beta.15.37** — ALL-BUTTON-FEEDBACK: fix All feedback callback (use module self, not `this`)
+- **2.0.0-beta.15.36** — ALL-BUTTON-FEEDBACK: fix OSC path parsing + bulk mute poll (128 values) + local All-state
+- **2.0.0-beta.15.35** — ALL-BUTTON-FEEDBACK: 3-state All presets (grau/aktiv/gelb ≠ Ungleich) + bulk OSC parse
+- **2.0.0-beta.15.34** — Restore latch preset color feedbacks (Mute/EQ/Delay/Polarity)
+- **2.0.0-beta.15.33** — Display presets: remove press/set actions
+- **2.0.0-beta.15.32** — Fix Matrix Input Delay polling/feedback refresh
+- **2.0.0-beta.15.31** — Remove rotary long-press; keep hold=coarse + delay 0.5/5 ms
+- **2.0.0-beta.15.30** — Fix rotary long-press + sticky coarse; delay steps 0.5/5 ms
+- **2.0.0-beta.15.29** — Rotary long-press: Gain 0/−120 dB, Delay → 0 ms (no conflict with hold+rotate)
+- **2.0.0-beta.15.28** — Fix display name via manifest name field (API 2.x)
+- **2.0.0-beta.15.27** — Display name: d&b audiotechnik: Soundscape Processor, DS110, DS100, DS100M
+- **2.0.0-beta.15.26** — Fix Companion display name via manufacturer field (Soundscape Processor)
+- **2.0.0-beta.15.25** — Rename display name to Soundscape Processor (DS110; DS100; DS100M)
 - **2.0.0-beta.15.24** — Rotary hold = coarse steps (dB 6 / delay 10ms / input 10)
 - **2.0.0-beta.15.23** — Rename section to Special Presets; Input Select rotary
 - **2.0.0-beta.15.22** — Special Presets: Display Input Name (polled channelname)
